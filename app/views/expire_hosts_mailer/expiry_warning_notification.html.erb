@@ -1,0 +1,39 @@
+Dear <%= @user_name %>,
+
+<br /> <br />
+
+Following hosts will be expired on <%= @expiry_date.strftime("%d %b %Y") %>. Please change expiry date if you want to keep these hosts alive.<br /><br />
+
+<font face="Arial,Times new roman">
+<table style="border: 1px solid #FF9933;border-collapse:collapse;padding: 5px;text-align:justify;">
+		<tr>
+			<th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
+				Host name
+			</th>
+			<th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
+				Host group
+			</th>
+			<th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
+				Environment
+			</th>
+		</tr>
+
+		<% for host in @hosts %>
+		<tr>		
+			<td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
+				<%= link_to host, host_path(:id => host, :host => @url.host, :port => @url.port, :only_path => false, :protocol => @url.scheme) %>
+			</td>
+			<td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
+				<%= host.hostgroup.to_s %>
+			</td>
+			<td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
+				<%= host.environment.to_s %>
+			</td>
+
+		</tr>
+
+		<% end %>
+
+	</table>
+</font>
+
