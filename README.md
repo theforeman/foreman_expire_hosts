@@ -8,6 +8,11 @@ This plugin add expired on(date) field to host form under Additional Information
 
 This plugin will send two warning notification before host expiry (see settings.yaml). It also sends notifications when the host stopped on its expiry date and when host is deleted after few days (configured in settings).
 
+# Screenshots
+![Expiry date field in host form](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/expiry-date-field-in-host-form.png)
+
+![Expiry date field in host show page](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/expiry-date-in-host-show-page.png)
+
 
 # Installation
 Please see the Foreman manual for appropriate instructions:
