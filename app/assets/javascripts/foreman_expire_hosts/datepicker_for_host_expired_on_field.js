@@ -1,16 +1,3 @@
-function show_expired_on_datepicker() {
-  var today = new Date();
-  $('#host_expired_on').datepicker({
-    autoclose: true,
-    orientation: 'top left',
-    format: 'dd/mm/yyyy',
-    clearBtn: true,
-    startDate: new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1)
-  });
-  $('#host_expired_on').datepicker('show');
-  append_shortcuts();
-}
-
 var shortcuts = {"1 day": 1, "1 week": 7, "1 month": 30, "1 year": 365, "3 days": 3, "3 weeks": 21, "3 months": 90};
 function append_shortcuts() {
   if ($(".datepicker-days #datepicker_shortcuts").length == 0) {
