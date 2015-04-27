@@ -18,7 +18,6 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'This Plugin will add new column expired_on to hosts table and input filed to host form'
   s.require_paths = ['lib']
-  s.rubygems_version = '1.8.23'
   s.add_dependency 'deface'
+  s.add_dependency 'bootstrap-datepicker-rails'
 end
-

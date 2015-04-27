@@ -1,4 +1,5 @@
 require 'deface'
+require 'bootstrap-datepicker-rails'
 
 module ForemanExpireHosts
   class Engine < ::Rails::Engine
@@ -26,5 +27,11 @@ module ForemanExpireHosts
       ActionView::Base.send :include, ForemanExpireHosts::HostExpiredOnHelper
     end
 
+    initializer 'foreman_expire_hosts.assets.precompile' do |app|
+      app.config.assets.precompile += %w(
+        'foreman_expire_hosts/application.js',
+        'foreman_expire_hosts/application.scss'
+      )
+    end
   end
 end
