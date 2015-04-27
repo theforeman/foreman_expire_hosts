@@ -36,12 +36,6 @@ This gem required uglifier gem to load assets. If you install this plugin throug
 
 # Post installation
 
-After installing this gem we need to add run below rake task to add required columns
-
-```yaml
-rake expired_hosts:add_column RAILS_ENV=production 
-```
-
 Add below line to crontab under root user to take appropriate action on expiring/expired hosts and notify user about those hosts. This cronjob will run at 11:30 PM(Midnight)
 
 
@@ -55,7 +49,7 @@ Add below line to crontab under root user to take appropriate action on expiring
 If we want to remove this feature and remove expired_on column from hosts table, please run below rake task and remove this gem from the Gemfile
 
 ```yaml
-rake expired_hosts:remove_column RAILS_ENV=production
+VERSION=20150427101516 RAILS_ENV=production rake db:migrate:down
 ```
 
 # Configuration

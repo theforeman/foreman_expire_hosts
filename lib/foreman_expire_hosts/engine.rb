@@ -18,6 +18,7 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :after => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_expire_hosts do
+        app.config.paths['db/migrate'] += ForemanExpireHosts::Engine.paths['db/migrate'].existent
       end
     end
 
