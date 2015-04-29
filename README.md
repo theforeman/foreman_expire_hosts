@@ -2,7 +2,7 @@
 
 # Context
 
-Foreman makes host creation extreamly sipmple for a sysadmin or a user.  However this simpliciy lead to wasetful usage of compute resources. foreman_expiry plugin allows to specify an expiry date for the host. On this date the host will be deleted. 
+Foreman makes host creation extremely simple for a sysadmin or a user.  However this simplicity lead to wasteful usage of compute resources. foreman_expiry plugin allows to specify an expiry date for the host. On this date the host will be deleted. 
 
 This plugin add expired on(date) field to host form under Additional Information section. If we create any host with expiry date, then that host will be stopped on given date and then deleted. If host has null/blank for expired on field then that host will be live forever (until it deleted manually).
 
@@ -36,12 +36,6 @@ This gem required uglifier gem to load assets. If you install this plugin throug
 
 # Post installation
 
-After installing this gem we need to add run below rake task to add required columns
-
-```yaml
-rake expired_hosts:add_column RAILS_ENV=production 
-```
-
 Add below line to crontab under root user to take appropriate action on expiring/expired hosts and notify user about those hosts. This cronjob will run at 11:30 PM(Midnight)
 
 
@@ -55,7 +49,7 @@ Add below line to crontab under root user to take appropriate action on expiring
 If we want to remove this feature and remove expired_on column from hosts table, please run below rake task and remove this gem from the Gemfile
 
 ```yaml
-rake expired_hosts:remove_column RAILS_ENV=production
+VERSION=20150427101516 RAILS_ENV=production rake db:migrate:down
 ```
 
 # Configuration
@@ -74,7 +68,7 @@ Add below content to settings.yaml file
     :notify1_days_before_expiry: 7 # Send first notification to owner of hosts about his hosts expiring in given days. Default = 7 days before host expiry
     :notify2_days_before_expiry: 1 # Second notification. Default = 1 days before host expiry
     :days_to_delete_after_expiration: 3 # Delete expired hosts after given days of hosts expiry date. Default = 3 days of it expiry
-    :notify_emails: ["foreman-admin@your_foreman.com", "foreman-admin2@your_foreman.com"] # All notifications will be delivered to its owner. If any other users/admins need to receive those expiry wanting notifiations then those emails can be configured here. This is the Array of email address and can give multiple emails in array. If no users need to revceive notificataions then this can be empyt array []
+    :notify_emails: ["foreman-admin@your_foreman.com", "foreman-admin2@your_foreman.com"] # All notifications will be delivered to its owner. If any other users/admins need to receive those expiry wanting notifications then those emails can be configured here. This is the Array of email address and can give multiple emails in array. If no users need to receive notifications then this can be empty array []
 ```
 
 You will need to restart Foreman for changes to take effect, as the `settings.yaml` is
