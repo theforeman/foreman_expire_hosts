@@ -13,6 +13,8 @@ This plugin will send two warning notification before host expiry (see settings.
 
 ![Expiry date field in host show page](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/expiry-date-in-host-show-page.png)
 
+![Plugin Settings](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/settings.png)
+
 
 # Installation
 Please see the Foreman manual for appropriate instructions:
@@ -36,6 +38,12 @@ This gem required uglifier, execjs and therubyracer gems to load assets. If you 
 
 # Post installation
 
+This plugin needs additional column in hosts table. Please run migration with below command
+
+```yaml
+VERSION=20150427101516 RAILS_ENV=production rake db:migrate:up
+```
+
 Add below line to crontab under root user to take appropriate action on expiring/expired hosts and notify user about those hosts. This cronjob will run at 11:30 PM(Midnight)
 
 
@@ -54,25 +62,9 @@ VERSION=20150427101516 RAILS_ENV=production rake db:migrate:down
 
 # Configuration
 
-Add below content to settings.yaml file 
+This plugin will add configurations to settings table and are editable from settings page
 
-```yaml
-:host_expired_on:
-  :host_form:
-    :view: :expired_on_input_field
-    :after: model_name
-    :is_mandatory: true  # This can be modified to true/false. If this is true then host will not allow to create with out expired_on value
-  :host_show:
-    :view: :expired_on_field
-  :delete_hosts:
-    :notify1_days_before_expiry: 7 # Send first notification to owner of hosts about his hosts expiring in given days. Default = 7 days before host expiry
-    :notify2_days_before_expiry: 1 # Second notification. Default = 1 days before host expiry
-    :days_to_delete_after_expiration: 3 # Delete expired hosts after given days of hosts expiry date. Default = 3 days of it expiry
-    :notify_emails: ["foreman-admin@your_foreman.com", "foreman-admin2@your_foreman.com"] # All notifications will be delivered to its owner. If any other users/admins need to receive those expiry wanting notifications then those emails can be configured here. This is the Array of email address and can give multiple emails in array. If no users need to receive notifications then this can be empty array []
-```
-
-You will need to restart Foreman for changes to take effect, as the `settings.yaml` is
-only read at startup.
+![Plugin Settings](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/settings.png)
 
 NOTE: After installing this plugin, please update administrator email in Foreman Web UI (More -> Settings -> General) with valid email. This can be used to send notification when plugin failed to deliver notifications to its owner.
 
