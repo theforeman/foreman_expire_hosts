@@ -17,6 +17,10 @@ module ForemanExpireHosts
       end
     end
 
+    initializer 'foreman_expire_hosts.load_default_settings', :before => :load_config_initializers do
+      require_dependency File.expand_path('../../../app/models/setting/expire_hosts.rb', __FILE__) if (Setting.table_exists? rescue(false))
+    end
+
     initializer 'foreman_expire_hosts.register_plugin', :after => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_expire_hosts do
         app.config.paths['db/migrate'] += ForemanExpireHosts::Engine.paths['db/migrate'].existent
@@ -29,8 +33,9 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.assets.precompile' do |app|
       app.config.assets.precompile += %w(
-        'foreman_expire_hosts/application.js',
-        'foreman_expire_hosts/application.scss'
+        'foreman_expire_hosts/expire_hosts.js',
+        'foreman_expire_hosts/datepicker_for_host_expired_on_field.js',
+        'foreman_expire_hosts/expire_hosts.css'
       )
     end
   end

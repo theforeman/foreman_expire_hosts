@@ -2,25 +2,12 @@ module ExpireHostsNotifications
   class << self
 
     def admin_email
-      notify_emails = SETTINGS[:host_expired_on].try(:fetch, :delete_hosts).try(:fetch, :notify_emails) rescue []
-      emails = (
-      if notify_emails.kind_of?(Array) and !notify_emails.empty?
-        notify_emails
-      else
-        (notify_emails.kind_of?(String) and !notify_emails.blank?) ? [notify_emails] : []
-      end)
-      ((!emails.empty?) ? emails : [Setting.where("name = 'administrator'").first.try(:value)])
+      return [(Setting[:host_expiry_email_recipients] || Setting.where("name = 'administrator'").first.try(:value))]
     end
 
     def days_to_delete_after_expired
-      days_to_delete_after_expired = SETTINGS[:host_expired_on].try(:fetch, :delete_hosts).try(:fetch, :days_to_delete_after_expiration).to_s rescue ''
-      days_to_delete_after_expired.match(/^[0-9]+$/).nil? ? 3 : days_to_delete_after_expired.to_i
-    end
-
-    def from_day_to_notify_before_expiry
-      days_before_expiry = SETTINGS[:host_expired_on].try(:fetch, :delete_hosts).try(:fetch, :notify1_days_before_expiry).to_s rescue ''
-      days_before_expiry = days_before_expiry.match(/^[0-9]+$/).nil? ? 7 : days_before_expiry.to_i
-      (Date.today + days_before_expiry.to_i)
+      days_to_delete_after_expiry = Setting[:days_to_delete_after_host_expiration].to_i
+      (days_to_delete_after_expiry == 0) ? 3 : days_to_delete_after_expiry.to_i
     end
 
     # This method to deliver deleted host details to its owner
@@ -104,8 +91,8 @@ module ExpireHostsNotifications
     def deliver_expiry_warning_notification(num=1) #notify1_days_before_expiry
       return unless [1, 2].include?(num)
       default_days = (num == 1 ? 7 : 1)
-      days_before_expiry = SETTINGS[:host_expired_on].try(:fetch, :delete_hosts).try(:fetch, "notify#{num}_days_before_expiry".to_sym).to_s rescue ''
-      days_before_expiry = days_before_expiry.match(/^[0-9]+$/).nil? ? default_days : days_before_expiry.to_i
+      days_before_expiry = Setting["notify#{num}_days_before_host_expiry"].to_i
+      days_before_expiry = (days_before_expiry == 0) ? default_days : days_before_expiry.to_i
       expiry_date        = (Date.today + days_before_expiry.to_i)
       notifiable_hosts   = Host.where("expired_on = '#{ expiry_date }'")
       unless notifiable_hosts.empty?
@@ -123,13 +110,7 @@ module ExpireHostsNotifications
     end
 
     def hosts_by_user(hosts)
-      notify_emails = SETTINGS[:host_expired_on].try(:fetch, :delete_hosts).try(:fetch, :notify_emails) rescue []
-      emails     = (
-      if notify_emails.kind_of?(Array) and !notify_emails.empty?
-        notify_emails
-      else
-        (notify_emails.kind_of?(String) and !notify_emails.blank?) ? [notify_emails] : []
-      end)
+      emails     = ExpireHostsNotifications.admin_email
       hosts_hash = {}
       hosts.each { |host|
         if host.owner_type == 'User'

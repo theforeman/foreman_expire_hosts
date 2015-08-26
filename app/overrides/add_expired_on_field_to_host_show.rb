@@ -1,4 +1,3 @@
-if SETTINGS[:host_expired_on] and SETTINGS[:host_expired_on][:host_show] and SETTINGS[:host_expired_on][:host_show][:view] == :expired_on_field
   Deface::Override.new(
     :virtual_path => 'hosts/_overview',
     :name         => 'host_expired_on_in_show',
@@ -13,4 +12,3 @@ if SETTINGS[:host_expired_on] and SETTINGS[:host_expired_on][:host_show] and SET
     :insert_before => '#host-show',
     :text          => "\n   <%= host_expiry_warning_message @host %>"
   )
-end

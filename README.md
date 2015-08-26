@@ -32,7 +32,7 @@ Update Foreman with the new gems:
 
 # Dependency
 
-This gem required uglifier gem to load assets. If you install this plugin through RPM package, please install ruby193-rubygem-uglifier rpm package before installing this plugin RPM package
+This gem required uglifier, execjs and therubyracer gems to load assets. If you install this plugin through RPM package, please install ruby193-rubygem-uglifier, ruby193-rubygem-execjs and ruby193-rubygem-therubyracer rpm package before installing this plugin RPM package
 
 # Post installation
 
@@ -128,6 +128,6 @@ curl command example
 curl -u admin:changeme 'https://your-foreman-url.com/api/hosts/testhost11' -d 'host[expired_on]=30/12/2014' -X PUT
 ```
 
-# Copyright
+## License
 
-Copyright (c) 2014 Ingenico
+GPLv3

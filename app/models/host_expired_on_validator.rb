@@ -7,7 +7,7 @@ module HostExpiredOnValidator
   end
 
   def validate_expired_on
-    if (SETTINGS[:host_expired_on] and SETTINGS[:host_expired_on][:host_form] and SETTINGS[:host_expired_on][:host_form][:is_mandatory]) and self.expired_on.to_s.blank?
+    if Setting[:is_host_expiry_date_mandatory] and self.expired_on.to_s.blank?
       errors.add(:expired_on, "can't be blank and must be future date")
     end
     unless self.expired_on.to_s.blank?
@@ -28,7 +28,6 @@ module HostExpiredOnValidator
   end
 
   def can_modify_expiry_date?
-    can_owner_modify = SETTINGS[:host_expired_on].try(:fetch, :edit_expiry_field).try(:fetch, :can_owner_modify) rescue false
-    (new_record? or (User.current and (User.current.admin or (can_owner_modify.to_s.downcase == 'true' and ((owner_type == 'User' and owner.id == User.current.id) or (owner_type == 'Usergroup' and owner.users.map { |usr| usr.id }.include?(User.current.id)))))))
+    (new_record? or (User.current and (User.current.admin or (Setting[:can_owner_modify_host_expiry_date] and ((owner_type == 'User' and owner.id == User.current.id) or (owner_type == 'Usergroup' and owner.users.map { |usr| usr.id }.include?(User.current.id)))))))
   end
 end
