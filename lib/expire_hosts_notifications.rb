@@ -10,6 +10,12 @@ module ExpireHostsNotifications
       (days_to_delete_after_expiry == 0) ? 3 : days_to_delete_after_expiry.to_i
     end
 
+    def from_day_to_notify_before_expiry
+      days_before_expiry = Setting["notify1_days_before_host_expiry"].to_i
+      days_before_expiry = (days_before_expiry == 0) ? 7 : days_before_expiry.to_i
+      return (Date.today + days_before_expiry.to_i)
+    end
+
     # This method to deliver deleted host details to its owner
     def delete_expired_hosts
       deletable_hosts     = Host.where("expired_on <= '#{(Date.today - ExpireHostsNotifications.days_to_delete_after_expired.to_i)}'")
