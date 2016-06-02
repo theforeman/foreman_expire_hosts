@@ -1,40 +1,4 @@
-Dear <%= @user_name %>,
-
-<br/> <br/>
-
-Following hosts has been expired in foreman and will be stopped for now. These hosts will be destroyed on <%= @delete_date.strftime('%d %b %Y') %>. Please change expiry date and power on if you want to keep hosts alive.
+<%= _('The following hosts have been expired in Foreman and will be stopped for now. These hosts will be destroyed on %s. Please change their expiry date and power them on if you want to keep the hosts.') % l @delete_date %>
 <br/><br/>
 
-<span style="font-family: Arial,Times new roman; ">
-  <table style="border: 1px solid #FF9933;border-collapse:collapse;padding: 5px;text-align:justify;">
-    <tr>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Host name
-      </th>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Host group
-      </th>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Environment
-      </th>
-    </tr>
-
-    <% @hosts.each do |host| %>
-      <tr>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= link_to host, host_path(:id => host, :host => @url.host, :port => @url.port, :only_path => false, :protocol => @url.scheme) %>
-        </td>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= host.hostgroup.to_s %>
-        </td>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= host.environment.to_s %>
-        </td>
-
-      </tr>
-
-    <% end %>
-
-  </table>
-</span>
-
+<%= render 'hosts_table', :hosts => @hosts, :link_to_hosts => true %>

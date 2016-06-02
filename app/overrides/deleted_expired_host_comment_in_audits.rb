@@ -1,7 +1,7 @@
 Deface::Override.new(
   :virtual_path  => 'audits/_list',
   :name          => 'deleted_expired_host_audit_comment_in_list',
-  :insert_bottom => 'div.row div.audit-content', #"erb[loud]:contains('link_to(audit_title(audit), audit_path(audit))')",
+  :insert_bottom => 'div.row div.audit-content',
   :text          => "\n <%= destroyed_expired_host_audit_comment_in_list(audit) %>"
 )
 

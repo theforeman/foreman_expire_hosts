@@ -1,38 +1,4 @@
-Dear <%= @user_name %>,
+<%= _('Failed to delete the following expired hosts in Foreman. Please delete them manually.') %>
+<br/><br/>
 
-<br/> <br/>
-
-Failed to delete following expired hosts in foreman. Please delete manually <br/><br/>
-
-<span style="font-family: Arial,Times new roman; ">
-  <table style="border: 1px solid #FF9933;border-collapse:collapse;padding: 5px;text-align:justify;">
-    <tr>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Host name
-      </th>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Host group
-      </th>
-      <th style="border: 1px solid #FF9933;border-collapse: collapse;padding: 4px;text-align:center;background-color: #FF9933;">
-        Environment
-      </th>
-    </tr>
-
-    <% @hosts.each do |host| %>
-      <tr>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= link_to host, host_path(:id => host, :host => @url.host, :port => @url.port, :only_path => false, :protocol => @url.scheme) %>
-        </td>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= host.hostgroup.to_s %>
-        </td>
-        <td style="border:1px solid #FF9933;border-collapse:collapse;padding:4px;background-color:#FFFFFF;">
-          <%= host.environment.to_s %>
-        </td>
-
-      </tr>
-
-    <% end %>
-
-  </table>
-</span>
+<%= render 'hosts_table', :hosts => @hosts, :link_to_hosts => true %>

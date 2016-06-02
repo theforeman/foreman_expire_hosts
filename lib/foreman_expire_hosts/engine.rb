@@ -3,17 +3,17 @@ require 'bootstrap-datepicker-rails'
 
 module ForemanExpireHosts
   class Engine < ::Rails::Engine
+    engine_name 'foreman_expire_hosts'
 
-    # engine_name :foreman_expire_hosts
+    config.autoload_paths += Dir["#{config.root}/lib"]
+    config.autoload_paths += Dir["#{config.root}/app/models/concerns"]
+    config.autoload_paths += Dir["#{config.root}/app/controllers/concerns"]
+    config.autoload_paths += Dir["#{config.root}/app/helpers/concerns"]
 
-    config.to_prepare do
-
-      if SETTINGS[:version].to_s.to_f >= 1.2
-        # Foreman 1.2
-        Host::Managed.send :include, HostExpiredOnValidator
-      else
-        # Foreman < 1.2
-        Host.send :include, HostExpiredOnValidator
+    # Add any db migrations
+    initializer 'foreman_plugin_template.load_app_instance_data' do |app|
+      ForemanExpireHosts::Engine.paths['db/migrate'].existent.each do |path|
+        app.config.paths['db/migrate'] << path
       end
     end
 
@@ -21,22 +21,41 @@ module ForemanExpireHosts
       require_dependency File.expand_path('../../../app/models/setting/expire_hosts.rb', __FILE__) if (Setting.table_exists? rescue(false))
     end
 
-    initializer 'foreman_expire_hosts.register_plugin', :after => :finisher_hook do |app|
+    initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        app.config.paths['db/migrate'] += ForemanExpireHosts::Engine.paths['db/migrate'].existent
+        requires_foreman '>= 1.10'
+        register_custom_status HostStatus::ExpirationStatus
+
+        security_block :hosts do
+          permission :edit_hosts, {:hosts => [:select_multiple_expiration, :update_multiple_expiration]}
+        end
       end
     end
 
-    initializer 'foreman_expire_hosts.helper' do |app|
-      ActionView::Base.send :include, ForemanExpireHosts::HostExpiredOnHelper
+    config.to_prepare do
+      begin
+        Host::Managed.send :include, ForemanExpireHosts::HostExt
+        HostsHelper.send :include, ForemanExpireHosts::HostsHelperExtensions
+        HostsController.send :include, ForemanExpireHosts::HostControllerExtensions
+      rescue => e
+        Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
+      end
     end
 
+    # Precompile any JS or CSS files under app/assets/
+    # If requiring files from each other, list them explicitly here to avoid precompiling the same
+    # content twice.
+    assets_to_precompile =
+      Dir.chdir(root) do
+        Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*'].map do |f|
+          f.split(File::SEPARATOR, 4).last
+        end
+      end
     initializer 'foreman_expire_hosts.assets.precompile' do |app|
-      app.config.assets.precompile += %w(
-        'foreman_expire_hosts/expire_hosts.js',
-        'foreman_expire_hosts/datepicker_for_host_expired_on_field.js',
-        'foreman_expire_hosts/expire_hosts.css'
-      )
+      app.config.assets.precompile += assets_to_precompile
+    end
+    initializer 'foreman_expire_hosts.configure_assets', group: :assets do
+      SETTINGS[:foreman_expire_hosts] = { assets: { precompile: assets_to_precompile } }
     end
   end
 end
