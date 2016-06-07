@@ -1,0 +1,4 @@
+<% expiry_message = host_expiry_warning_message(@host) %>
+<% if expiry_message.present? %>
+  <%= alert(:text => expiry_message, :class => 'alert-warning') %>
+<% end %>

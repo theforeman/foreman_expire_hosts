@@ -2,7 +2,7 @@
 
 # Context
 
-Foreman makes host creation extremely simple for a sysadmin or a user.  However this simplicity lead to wasteful usage of compute resources. foreman_expiry plugin allows to specify an expiry date for the host. On this date the host will be deleted. 
+Foreman makes host creation extremely simple for a sysadmin or a user.  However this simplicity lead to wasteful usage of compute resources. foreman_expiry plugin allows to specify an expiry date for the host. On this date the host will be deleted.
 
 This plugin add expired on(date) field to host form under Additional Information section. If we create any host with expiry date, then that host will be stopped on given date and then deleted. If host has null/blank for expired on field then that host will be live forever (until it deleted manually).
 
@@ -21,8 +21,8 @@ Please see the Foreman manual for appropriate instructions:
 
 * [Foreman: How to Install a Plugin](http://theforeman.org/manuals/latest/index.html#6.Plugins)
 
-Example installation from source. 
-Require foreman_expire_hosts gem installation (edit `~foreman/bundler.d/Gemfile.local.rb`): 
+Example installation from source.
+Require foreman_expire_hosts gem installation (edit `~foreman/bundler.d/Gemfile.local.rb`):
 
 ```yaml
 gem 'foreman_expire_hosts', :git => "https://github.com/ingenico-group/foreman_expire_hosts.git"
@@ -47,9 +47,8 @@ VERSION=20150427101516 RAILS_ENV=production rake db:migrate:up
 Add below line to crontab under root user to take appropriate action on expiring/expired hosts and notify user about those hosts. This cronjob will run at 11:30 PM(Midnight)
 
 
-```yaml
-30 23 * * *  cd /usr/share/foreman && su foreman /usr/bin/ruby193-rake expired_hosts:deliver_notifications RAILS_ENV=production >> /var/log/foreman/expired_hosts.log>&1
-
+```
+30 23 * * *  /usr/sbin/foreman-rake expired_hosts:deliver_notifications >> /var/log/foreman/expired_hosts.log 2>&1
 ```
 
 # Pre remove

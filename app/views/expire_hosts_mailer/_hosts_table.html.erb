@@ -1,0 +1,40 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+        <%= _('Hostname') %>
+      </th>
+      <th>
+        <%= _('Host group') %>
+      </th>
+      <th>
+        <%= _('Environment') %>
+      </th>
+      <th>
+        <%= _('Expiration Date') %>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% hosts.each do |host| %>
+      <tr>
+        <td class="hosts-rows">
+          <% if link_to_hosts %>
+            <%= link_to host, host_url(:id => host, :only_path => true) %>
+          <% else %>
+            <%= host %>
+          <% end %>
+        </td>
+        <td class="hosts-rows">
+          <%= host.hostgroup %>
+        </td>
+        <td class="hosts-rows">
+          <%= host.environment %>
+        </td>
+        <td class="hosts-rows">
+          <%= "#{l(host.expired_on)} (#{relative_date(host.expired_on)})" if host.expires? %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
