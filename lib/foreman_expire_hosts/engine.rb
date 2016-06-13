@@ -37,6 +37,7 @@ module ForemanExpireHosts
         Host::Managed.send :include, ForemanExpireHosts::HostExt
         HostsHelper.send :include, ForemanExpireHosts::HostsHelperExtensions
         HostsController.send :include, ForemanExpireHosts::HostControllerExtensions
+        AuditsHelper.send :include, ForemanExpireHosts::AuditsHelperExtensions
       rescue => e
         Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
       end
