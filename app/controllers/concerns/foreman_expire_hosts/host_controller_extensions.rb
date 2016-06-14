@@ -4,8 +4,9 @@ module ForemanExpireHosts
 
     included do
       before_filter :validate_multiple_expiration, :only => :update_multiple_expiration
-      before_filter :find_multiple, :only => [:select_multiple_expiration, :update_multiple_expiration]
+      before_filter :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
       alias_method_chain :action_permission, :expire_hosts
+      alias_method :find_multiple_with_expire_hosts, :find_multiple
     end
 
     def select_multiple_expiration
