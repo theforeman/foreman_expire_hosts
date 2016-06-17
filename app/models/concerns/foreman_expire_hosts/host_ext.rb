@@ -16,7 +16,7 @@ module ForemanExpireHosts
       scope :with_expire_date, ->(date) { expiring.where('expired_on = ?', date) }
       scope :expired, -> { expiring.where('expired_on < ?', Date.today) }
       scope :expiring_today, -> { expiring.with_expire_date(Date.today) }
-      scope :expired_past_grace_period, -> { expiring.where('expired_on < ?', Date.today + Setting[:days_to_delete_after_host_expiration].to_i) }
+      scope :expired_past_grace_period, -> { expiring.where('expired_on <= ?', Date.today - Setting[:days_to_delete_after_host_expiration].to_i) }
 
       scoped_search :on => :expired_on, :complete_value => :true, :rename => :expires, :only_explicit => true
     end
@@ -60,7 +60,7 @@ module ForemanExpireHosts
 
     def expired_past_grace_period?
       return false unless expires?
-      expiration_grace_period_end_date < Date.today
+      expiration_grace_period_end_date <= Date.today
     end
 
     def pending_expiration_start_date

@@ -24,7 +24,7 @@ module ExpireHostsNotifications
       deletable_hosts.each do |deletable_host|
         Rails.logger.info "Deleting expired host #{deletable_host}"
         deletable_host.audit_comment = _('Destroyed since it got expired on %s') % deletable_host.expired_on
-        if deletable_host # .destroy
+        if deletable_host.destroy
           deleted_hosts << deletable_host
         else
           failed_delete_hosts << deletable_host

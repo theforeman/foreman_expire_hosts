@@ -1,6 +1,8 @@
 require 'test_plugin_helper'
 
 class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
+  EXPIRATION_SCOPES = ['expiring', 'expired', 'expiring_today', 'expired_past_grace_period']
+
   setup do
     User.current = FactoryGirl.build(:user, :admin)
     setup_settings
@@ -53,6 +55,10 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     test 'should not be pending expiration' do
       refute @host.pending_expiration?
     end
+
+    test 'should not be in any expiration scopes' do
+      exists_only_in_scopes(@host, [])
+    end
   end
 
   context 'a expired host' do
@@ -78,6 +84,10 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
     test 'should not be pending expiration' do
       refute @host.pending_expiration?
+    end
+
+    test 'should only exist in correct scopes' do
+      exists_only_in_scopes(@host, ['expiring', 'expired', 'expired_past_grace_period'])
     end
   end
 
@@ -106,6 +116,10 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     test 'should be pending expiration' do
       assert @host.pending_expiration?
     end
+
+    test 'should only exist in correct scopes' do
+      exists_only_in_scopes(@host, ['expiring', 'expiring_today'])
+    end
   end
 
   context 'a host in grace period' do
@@ -132,5 +146,21 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     test 'should not be pending expiration' do
       refute @host.pending_expiration?
     end
+
+    test 'should only exist in correct scopes' do
+      exists_only_in_scopes(@host, ['expiring', 'expired'])
+    end
+  end
+
+  private
+
+  def exists_only_in_scopes(host, valid_scopes)
+      host.save(validate: false)
+      (EXPIRATION_SCOPES - valid_scopes).each do |scope|
+        refute Host::Managed.send(scope).exists?(host.id), "Host should not exist in #{scope} scope"
+      end
+      valid_scopes.each do |scope|
+        assert Host::Managed.send(scope).exists?(host.id), "Host should exist in #{scope} scope"
+      end
   end
 end

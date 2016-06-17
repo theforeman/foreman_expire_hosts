@@ -11,9 +11,9 @@ module HostStatus
     end
 
     def to_status(_options = {})
+      return EXPIRES_TODAY if host.expires_today?
       return EXPIRED if host.expired_past_grace_period?
       return IN_GRACE_PERIOD if host.expired?
-      return EXPIRES_TODAY if host.expires_today?
       return PENDING if host.pending_expiration?
       OK
     end
