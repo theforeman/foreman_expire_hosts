@@ -2,7 +2,7 @@
   <%= stylesheet 'foreman_expire_hosts/application' %>
   <%= javascript 'foreman_expire_hosts/application' %>
 <% end %>
-<%= text_f f, :expired_on,
+<%= datepicker_f f, :expired_on,
            :value        => @host.expired_on.try(:strftime, '%d/%m/%Y'),
            :data         => { provide:              @host.can_modify_expiry_date? ? 'datepicker' : 'readonly',
                               orientation:          'top left',

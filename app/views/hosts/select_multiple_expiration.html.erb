@@ -6,7 +6,7 @@
 
 <%= _('Host will be deleted automatically on given expired date. Leave blank to clear expiration date.') %>
 
-<%= text_f f, :expired_on,
+<%= datepicker_f f, :expired_on,
      :value        => (Date.today + 14).strftime('%d/%m/%Y'),
      :data         => { provide:              'datepicker',
                         orientation:          'top left',
