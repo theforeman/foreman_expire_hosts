@@ -12,7 +12,7 @@ module ExpireHostsNotifications
     def catch_delivery_errors(message, hosts = [])
       yield
     rescue => error
-      message = "#{message} for Hosts #{hosts.map(&:name).to_sentence}"
+      message = _("%{message} for Hosts %{hosts}") % {:message => message, :hosts => hosts.map(&:name).to_sentence}
       Foreman::Logging.exception(message, error)
     end
 
