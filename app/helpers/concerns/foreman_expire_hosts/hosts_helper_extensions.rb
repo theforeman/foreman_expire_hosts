@@ -7,6 +7,7 @@ module ForemanExpireHosts
     end
 
     def multiple_actions_with_expire_hosts
+      return multiple_actions_without_expire_hosts unless authorized_for(:controller => :hosts, :action => :edit)
       multiple_actions_without_expire_hosts + [[_('Change Expiration'), select_multiple_expiration_hosts_path]]
     end
 
