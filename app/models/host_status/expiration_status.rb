@@ -24,11 +24,11 @@ module HostStatus
         HostStatus::Global::OK
       when EXPIRES_TODAY
         HostStatus::Global::WARN
+      when PENDING
+        HostStatus::Global::WARN
       when IN_GRACE_PERIOD
         HostStatus::Global::ERROR
       when EXPIRED
-        HostStatus::Global::ERROR
-      when PENDING
         HostStatus::Global::ERROR
       else
         HostStatus::Global::OK
