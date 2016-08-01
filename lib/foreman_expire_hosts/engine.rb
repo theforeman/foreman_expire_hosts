@@ -23,8 +23,11 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        requires_foreman '>= 1.10'
+        requires_foreman '>= 1.13'
         register_custom_status HostStatus::ExpirationStatus
+
+        # strong parameters
+        parameter_filter Host::Managed, :expires_on
 
         security_block :hosts do
           permission :edit_hosts, {:hosts => [:select_multiple_expiration, :update_multiple_expiration]}

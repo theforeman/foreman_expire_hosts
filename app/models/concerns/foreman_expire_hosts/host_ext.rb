@@ -4,7 +4,6 @@ module ForemanExpireHosts
 
     included do
       after_validation :validate_expired_on
-      attr_accessible :expired_on
 
       validates :expired_on, :presence => true, :if => -> { Setting[:is_host_expiry_date_mandatory] }
 
