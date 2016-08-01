@@ -9,7 +9,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
   context 'deleted hosts notification' do
     setup do
-      @mail = ExpireHostsMailer.deleted_hosts_notification(@emails, @hosts).deliver
+      @mail = ExpireHostsMailer.deleted_hosts_notification(@emails, @hosts).deliver_now
     end
 
     test 'subject should be set' do
@@ -20,7 +20,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
   context 'failed to delete hosts notification' do
     setup do
-      @mail = ExpireHostsMailer.failed_to_delete_hosts_notification(@emails, @hosts).deliver
+      @mail = ExpireHostsMailer.failed_to_delete_hosts_notification(@emails, @hosts).deliver_now
     end
 
     test 'subject should be set' do
@@ -31,7 +31,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
   context 'stopped hosts notification' do
     setup do
-      @mail = ExpireHostsMailer.stopped_hosts_notification(@emails, Date.today, @hosts).deliver
+      @mail = ExpireHostsMailer.stopped_hosts_notification(@emails, Date.today, @hosts).deliver_now
     end
 
     test 'subject should be set' do
@@ -42,7 +42,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
   context 'failed to stop hosts notification' do
     setup do
-      @mail = ExpireHostsMailer.failed_to_stop_hosts_notification(@emails, @hosts).deliver
+      @mail = ExpireHostsMailer.failed_to_stop_hosts_notification(@emails, @hosts).deliver_now
     end
 
     test 'subject should be set' do
@@ -53,7 +53,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
   context 'expiry warning notification' do
     setup do
-      @mail = ExpireHostsMailer.expiry_warning_notification(@emails, Date.today, @hosts).deliver
+      @mail = ExpireHostsMailer.expiry_warning_notification(@emails, Date.today, @hosts).deliver_now
     end
 
     test 'subject should be set' do
