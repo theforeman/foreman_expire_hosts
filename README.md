@@ -13,6 +13,7 @@ This plugin will send two warning notification before host expiry (see Settings)
 | Foreman Version | Plugin Version |
 | --------------- | -------------- |
 | >= 1.11         | ~> 2.0         |
+| >= 1.13         | ~> 2.1         |
 
 # Screenshots
 ![Expiry date field in host form](https://raw.githubusercontent.com/ingenico-group/screenshots/master/foreman_host_expiry/expiry-date-field-in-host-form.png)
