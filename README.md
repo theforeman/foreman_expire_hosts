@@ -2,11 +2,11 @@
 
 # Context
 
-Foreman makes host creation extremely simple for a sysadmin or a user.  However this simplicity leads to wasteful usage of compute resources. foreman_expiry plugin allows to specify an expiry date for the host. On this date the host will be deleted.
+Foreman makes host creation extremely simple for a sysadmin or a user. However this simplicity leads to wasteful usage of compute resources. The foreman_expire_hosts plugin allows to specify an expiry date for the host. The host will be shutdown first and then automatically deleted after a grace period.
 
-This plugin add expired on(date) field to host form under Additional Information section. If we create any host with expiry date, then that host will be stopped on given date and then deleted. If a host has no expiration date set then that host will live forever (until it is deleted manually).
+This plugin adds an expired on (date) field to the host form (Additional Information tab). If we create a host with expiry date, then that host will be stopped on the day after the given date and then deleted. If a host has no expiration date set then that host will live forever (until it is deleted manually).
 
-This plugin will send two warning notification before host expiry (see Settings). It also sends notifications when the host stopped on its expiry date and when host is deleted after few days (configured in settings).
+This plugin will send two warning notifications before host expiry (see Settings). It also sends notifications when the host is stopped on its expiry date and when the host is deleted after the grace period (configured in settings).
 
 ## Compatibility
 
@@ -24,17 +24,10 @@ This plugin will send two warning notification before host expiry (see Settings)
 
 
 # Installation
-Please see the Foreman manual for appropriate instructions:
-
-* [Foreman: How to Install a Plugin](http://theforeman.org/manuals/latest/index.html#6.Plugins)
-
-The gem name is "foreman_expire_hosts".
-
-RPM users can install the "tfm-rubygem-foreman_expire_hosts" or
-"rubygem-foreman_expire_hosts" packages.
+See [Plugins install instructions](https://theforeman.org/plugins/) for how to install Foreman plugins.
+TLDR: You need to install the package `tfm-rubygem-foreman_expire_hosts` on RPM-based systems or use foreman-installer.
 
 This plugin has not been packeged for Debian, yet.
-
 
 # Post installation
 
