@@ -73,7 +73,14 @@ module ForemanExpireHosts
     end
 
     def can_modify_expiry_date?
-      (new_record? || (defined?(Rails::Console) || (User.current && (User.current.admin || (Setting[:can_owner_modify_host_expiry_date] || ((owner_type == 'User' && owner.id == User.current.id) || (owner_type == 'Usergroup' && owner.users.map(&:id).include?(User.current.id))))))))
+      return true if new_record?
+      return true if defined?(Rails::Console)
+      return true unless User.current
+      return true if User.current.admin?
+      return true if self.owner_type.nil? || self.owner.nil?
+      Setting[:can_owner_modify_host_expiry_date] &&
+        ((self.owner_type == 'User' && self.owner == User.current) ||
+         (self.owner_type == 'Usergroup' && self.owner.users.include?(User.current)))
     end
 
     private

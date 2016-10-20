@@ -31,6 +31,41 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
   end
 
+  context 'changing expiration date for user owned host' do
+    setup do
+      @user = FactoryGirl.create(:user)
+      @host = FactoryGirl.create(:host, :expired, :owner => @user)
+    end
+
+    test 'admin should be able to change expiration date' do
+      @host.expired_on = Date.today + 5
+      assert_valid @host
+    end
+
+    test 'user should not be able to change expiration date' do
+      as_user FactoryGirl.build(:user) do
+        @host.expired_on = Date.today + 5
+        refute_valid @host
+      end
+    end
+
+    test 'owner should not be able to change expiration date if forbidden in settings' do
+      Setting[:can_owner_modify_host_expiry_date] = false
+      as_user @user do
+        @host.expired_on = Date.today + 5
+        refute_valid @host
+      end
+    end
+
+    test 'owner should be able to change expiration date if allowed in settings' do
+      Setting[:can_owner_modify_host_expiry_date] = true
+      as_user @user do
+        @host.expired_on = Date.today + 5
+        assert_valid @host
+      end
+    end
+  end
+
   context 'a host without expiration' do
     setup do
       @host = FactoryGirl.build(:host)
