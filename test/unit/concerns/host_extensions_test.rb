@@ -1,7 +1,7 @@
 require 'test_plugin_helper'
 
 class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
-  EXPIRATION_SCOPES = ['expiring', 'expired', 'expiring_today', 'expired_past_grace_period']
+  EXPIRATION_SCOPES = ['expiring', 'expired', 'expiring_today', 'expired_past_grace_period'].freeze
 
   setup do
     User.current = FactoryGirl.build(:user, :admin)
@@ -190,12 +190,12 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
   private
 
   def exists_only_in_scopes(host, valid_scopes)
-      host.save(validate: false)
-      (EXPIRATION_SCOPES - valid_scopes).each do |scope|
-        refute Host::Managed.send(scope).exists?(host.id), "Host should not exist in #{scope} scope"
-      end
-      valid_scopes.each do |scope|
-        assert Host::Managed.send(scope).exists?(host.id), "Host should exist in #{scope} scope"
-      end
+    host.save(validate: false)
+    (EXPIRATION_SCOPES - valid_scopes).each do |scope|
+      refute Host::Managed.send(scope).exists?(host.id), "Host should not exist in #{scope} scope"
+    end
+    valid_scopes.each do |scope|
+      assert Host::Managed.send(scope).exists?(host.id), "Host should exist in #{scope} scope"
+    end
   end
 end

@@ -56,7 +56,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
     test 'should send two notifications for two users' do
       owner2 = FactoryGirl.create(:user, :with_mail)
-      host2 = FactoryGirl.create(:host, :expires_in_a_week, :owner => owner2)
+      FactoryGirl.create(:host, :expires_in_a_week, :owner => owner2)
       ExpireHostsMailer.expects(:expiry_warning_notification).twice
       ExpireHostsNotifications.deliver_expiry_warning_notification
     end
@@ -69,7 +69,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       hosts = [host1, host2]
       Foreman::Logging.expects(:exception).with('failure for Hosts Alpha and Bravo', anything)
       ExpireHostsNotifications.catch_delivery_errors('failure', hosts) do
-        raise "Test"
+        raise 'Test'
       end
     end
   end

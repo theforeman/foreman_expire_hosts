@@ -2,7 +2,7 @@ FactoryGirl.modify do
   factory :host do
     trait :without_validation do
       # Turn off validation so we can create a host with an expiry date in the past
-      to_create {|instance| instance.save(validate: false) }
+      to_create { |instance| instance.save(validate: false) }
     end
 
     trait :expires_in_a_week do

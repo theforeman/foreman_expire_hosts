@@ -12,7 +12,7 @@ module ExpireHostsNotifications
     def catch_delivery_errors(message, hosts = [])
       yield
     rescue => error
-      message = _("%{message} for Hosts %{hosts}") % {:message => message, :hosts => hosts.map(&:name).to_sentence}
+      message = _('%{message} for Hosts %{hosts}') % {:message => message, :hosts => hosts.map(&:name).to_sentence}
       Foreman::Logging.exception(message, error)
     end
 
@@ -80,11 +80,10 @@ module ExpireHostsNotifications
       days_before_expiry = Setting["notify#{num}_days_before_host_expiry"].to_i
       expiry_date        = (Date.today + days_before_expiry)
       notifiable_hosts   = Host.with_expire_date(expiry_date)
-      unless notifiable_hosts.empty?
-        hosts_by_user(notifiable_hosts).each do |user_id, hosts_hash|
-          catch_delivery_errors(_('Failed to deliver expiring hosts notification'), notifiable_hosts) do
-            ExpireHostsMailer.expiry_warning_notification(hosts_hash['email'], expiry_date, hosts_hash['hosts']).deliver_now
-          end
+      return if notifiable_hosts.empty?
+      hosts_by_user(notifiable_hosts).each do |user_id, hosts_hash|
+        catch_delivery_errors(_('Failed to deliver expiring hosts notification'), notifiable_hosts) do
+          ExpireHostsMailer.expiry_warning_notification(hosts_hash['email'], expiry_date, hosts_hash['hosts']).deliver_now
         end
       end
     end
