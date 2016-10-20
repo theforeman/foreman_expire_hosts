@@ -35,7 +35,7 @@ module ForemanExpireHosts
           errors.add(:expired_on, _('no permission to edit'))
         end
       end
-      errors[:expired_on].empty?
+      true
     end
 
     def expires?
