@@ -27,7 +27,7 @@ module ForemanExpireHosts
         register_custom_status HostStatus::ExpirationStatus
 
         # strong parameters
-        parameter_filter Host::Managed, :expires_on
+        parameter_filter Host::Managed, :expired_on
 
         security_block :hosts do
           permission :edit_hosts, {:hosts => [:select_multiple_expiration, :update_multiple_expiration]}

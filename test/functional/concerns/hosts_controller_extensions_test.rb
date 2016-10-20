@@ -2,7 +2,52 @@ require 'test_plugin_helper'
 
 class HostsControllerTest < ActionController::TestCase
   setup do
+    User.current = FactoryGirl.build(:user, :admin)
+    disable_orchestration
     setup_settings
+  end
+
+  describe 'host creation' do
+    test 'new host with expiration date' do
+      expiration_date = Date.today + 14
+      assert_difference 'Host.count' do
+        post :create, {
+          :host => {
+            :name => 'myotherfullhost',
+            :mac => 'aabbecddee06',
+            :ip => '2.3.4.125',
+            :domain_id => domains(:mydomain).id,
+            :operatingsystem_id => operatingsystems(:redhat).id,
+            :architecture_id => architectures(:x86_64).id,
+            :environment_id => environments(:production).id,
+            :subnet_id => subnets(:one).id,
+            :medium_id => media(:one).id,
+            :pxe_loader => 'Grub2 UEFI',
+            :realm_id => realms(:myrealm).id,
+            :disk => 'empty partition',
+            :puppet_proxy_id => smart_proxies(:puppetmaster).id,
+            :root_pass => 'xybxa6JUkz63w',
+            :location_id => taxonomies(:location1).id,
+            :organization_id => taxonomies(:organization1).id,
+            :expired_on => expiration_date
+          }
+        }, set_session_user
+      end
+      h = Host.search_for('myotherfullhost').first
+      assert_equal expiration_date, h.expired_on
+      assert_redirected_to host_url(assigns['host'])
+    end
+  end
+
+  describe 'updating a host' do
+    let(:host) { FactoryGirl.create(:host) }
+
+    test 'should add expiration date to host' do
+      expiration_date = Date.today + 14
+      put :update, { :id => host.name, :host => {:expired_on => expiration_date} }, set_session_user
+      h = Host.find(host.id)
+      assert_equal expiration_date, h.expired_on
+    end
   end
 
   describe 'setting expiration date on multiple hosts' do
