@@ -2,7 +2,7 @@ require 'test_plugin_helper'
 
 class HostsControllerTest < ActionController::TestCase
   setup do
-    User.current = FactoryGirl.build(:user, :admin)
+    User.current = users(:admin)
     disable_orchestration
     setup_settings
   end
