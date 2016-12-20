@@ -62,14 +62,10 @@ module ForemanExpireHosts
       expiration_grace_period_end_date <= Date.today
     end
 
-    def pending_expiration_start_date
-      Date.today - Setting['notify1_days_before_host_expiry'].to_i
-    end
-
     def pending_expiration?
       return false unless expires?
       return false if expired?
-      pending_expiration_start_date <= expired_on
+      expired_on - Setting['notify1_days_before_host_expiry'].to_i <= Date.today
     end
 
     def can_modify_expiry_date?
