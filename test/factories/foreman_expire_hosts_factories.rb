@@ -5,6 +5,10 @@ FactoryGirl.modify do
       to_create { |instance| instance.save(validate: false) }
     end
 
+    trait :expires_in_a_year do
+      expired_on Date.today + 365
+    end
+
     trait :expires_in_a_week do
       expired_on Date.today + 7
     end

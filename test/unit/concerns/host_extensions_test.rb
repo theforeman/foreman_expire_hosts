@@ -157,6 +157,37 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
   end
 
+  context 'a host expiring in a year' do
+    setup do
+      @host = FactoryGirl.build(:host, :expires_in_a_year)
+    end
+
+    test 'should expire' do
+      assert_equal (Date.today + 365), @host.expired_on
+      assert @host.expires?
+    end
+
+    test 'should not expire today' do
+      refute @host.expires_today?
+    end
+
+    test 'should not be expired' do
+      refute @host.expired?
+    end
+
+    test 'should not be expired past grace period' do
+      refute @host.expired_past_grace_period?
+    end
+
+    test 'should not be pending expiration' do
+      refute @host.pending_expiration?
+    end
+
+    test 'should only exist in correct scopes' do
+      exists_only_in_scopes(@host, ['expiring'])
+    end
+  end
+
   context 'a host in grace period' do
     setup do
       @host = FactoryGirl.build(:host, :expired_grace)
