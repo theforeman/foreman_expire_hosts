@@ -32,6 +32,12 @@ module ForemanExpireHosts
         security_block :hosts do
           permission :edit_hosts, {:hosts => [:select_multiple_expiration, :update_multiple_expiration]}
         end
+
+        security_block :foreman_expire_hosts do
+          permission :edit_host_expiry,
+                     {},
+                     :resource_type => 'Host'
+        end
       end
     end
 

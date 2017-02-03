@@ -66,6 +66,33 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
   end
 
+  context 'changing expiration date for user' do
+    let(:host) { FactoryGirl.create(:host, :managed) }
+
+    context 'with edit_host_expiry permission' do
+      let(:permission) { Permission.find_by_name('edit_host_expiry') }
+      let(:filter) { FactoryGirl.create(:filter, :permissions => [permission]) }
+      let(:role) { FactoryGirl.create(:role, :filters => [filter]) }
+      let(:user) { FactoryGirl.create(:user, :organizations => [host.organization], :locations => [host.location], :roles => [role]) }
+
+      test 'user can change expiry date' do
+        as_user user do
+          assert_equal true, host.can_modify_expiry_date?
+        end
+      end
+    end
+
+    context 'without edit_host_expiry permission' do
+      let(:user) { FactoryGirl.build(:user, :organizations => [host.organization], :locations => [host.location]) }
+
+      test 'user can not change expiry date' do
+        as_user user do
+          assert_equal false, host.can_modify_expiry_date?
+        end
+      end
+    end
+  end
+
   context 'a host without expiration' do
     setup do
       @host = FactoryGirl.build(:host)
