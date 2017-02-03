@@ -14,7 +14,9 @@
            },
            :autocomplete => false,
            :placeholder  => 'dd/mm/yyyy',
-           :help_inline  => popover('Auto Expiry', 'Host will be deleted automatically on given expired date.
-            <br> Leave blank to keep the host until deleted manually'),
+           :help_block => ('<span class="pficon-warning-triangle-o"></span> '.html_safe + _('You are not allowed to change the expiry date of this host.') unless @host.can_modify_expiry_date?),
+           :readonly => !@host.can_modify_expiry_date?,
+           :help_inline  => popover('Auto Expiry', _('Host will be deleted automatically on given expiry date.') + '<br>'.html_safe +
+                                    _('Leave blank to keep the host until deleted manually')),
            :onfocus      => 'append_shortcuts()'
 %>

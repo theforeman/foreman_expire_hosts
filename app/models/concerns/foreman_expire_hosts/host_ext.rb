@@ -72,7 +72,7 @@ module ForemanExpireHosts
       return true if new_record?
       return true if defined?(Rails::Console)
       return true unless User.current
-      return true if User.current.admin?
+      return true if Authorizer.new(User.current).can?(:edit_host_expiry, self)
       return true if self.owner_type.nil? || self.owner.nil?
       Setting[:can_owner_modify_host_expiry_date] &&
         ((self.owner_type == 'User' && self.owner == User.current) ||
