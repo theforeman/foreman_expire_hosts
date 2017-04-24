@@ -58,6 +58,13 @@ class HostsControllerTest < ActionController::TestCase
       @request.env['HTTP_REFERER'] = hosts_path
     end
 
+    test 'show a host selection' do
+      host_ids = @hosts.map(&:id)
+      xhr :post, :select_multiple_expiration, {:host_ids => host_ids}, set_session_user
+      assert_response :success
+      assert response.body =~ /#{@hosts.first.name}.*#{@hosts.last.name}/m
+    end
+
     test 'should set expiration date' do
       expiration_date = Date.today + 14
       params = { :host_ids => @hosts.map(&:id),

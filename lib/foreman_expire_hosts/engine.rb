@@ -23,7 +23,7 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        requires_foreman '>= 1.13'
+        requires_foreman '>= 1.15'
         register_custom_status HostStatus::ExpirationStatus
 
         # strong parameters
