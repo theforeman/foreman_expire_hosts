@@ -62,7 +62,9 @@ class HostsControllerTest < ActionController::TestCase
       host_ids = @hosts.map(&:id)
       xhr :post, :select_multiple_expiration, {:host_ids => host_ids}, set_session_user
       assert_response :success
-      assert response.body =~ /#{@hosts.first.name}.*#{@hosts.last.name}/m
+      @hosts.each do |host|
+        assert response.body =~ /#{host.name}/m
+      end
     end
 
     test 'should set expiration date' do
@@ -90,7 +92,7 @@ class HostsControllerTest < ActionController::TestCase
       assert_empty flash[:error]
 
       @hosts.each do |host|
-        assert_equal nil, host.reload.expired_on
+        assert_nil host.reload.expired_on
       end
     end
   end
