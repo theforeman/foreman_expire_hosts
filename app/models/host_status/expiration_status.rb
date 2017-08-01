@@ -50,7 +50,7 @@ module HostStatus
       end
     end
 
-    def relevant?(options = {})
+    def relevant?(_options = {})
       host.expires?
     end
   end

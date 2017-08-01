@@ -1,5 +1,4 @@
 class Setting::ExpireHosts < Setting
-
   def self.load_defaults
     # Check the table exists
     return unless super
@@ -17,5 +16,4 @@ class Setting::ExpireHosts < Setting
 
     true
   end
-
 end

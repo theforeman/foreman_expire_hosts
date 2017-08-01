@@ -9,8 +9,7 @@ module ForemanExpireHosts
       alias_method :find_multiple_with_expire_hosts, :find_multiple
     end
 
-    def select_multiple_expiration
-    end
+    def select_multiple_expiration; end
 
     def update_multiple_expiration
       expiration_date = params[:host][:expired_on]
@@ -25,7 +24,7 @@ module ForemanExpireHosts
         rescue => error
           failed_hosts[host.name] = error
           message = if expiration_date.present?
-                      _('Failed to set expiration date for %{host} to %{expiration_date}.') % {:host => host, :expiration_date => l(expiration_date)}
+                      _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }
                     else
                       _('Failed to clear expiration date for %s.') % host
                     end

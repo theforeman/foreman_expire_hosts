@@ -70,7 +70,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     let(:host) { FactoryGirl.create(:host, :managed) }
 
     context 'with edit_host_expiry permission' do
-      let(:permission) { Permission.find_by_name('edit_host_expiry') }
+      let(:permission) { Permission.find_by(name: 'edit_host_expiry') }
       let(:filter) { FactoryGirl.create(:filter, :permissions => [permission]) }
       let(:role) { FactoryGirl.create(:role, :filters => [filter]) }
       let(:user) { FactoryGirl.create(:user, :organizations => [host.organization], :locations => [host.location], :roles => [role]) }

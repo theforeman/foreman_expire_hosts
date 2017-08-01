@@ -1,6 +1,5 @@
 module ExpireHostsNotifications
   class << self
-
     def admin_email
       [(Setting[:host_expiry_email_recipients] || Setting[:administrator])]
     end
@@ -12,7 +11,7 @@ module ExpireHostsNotifications
     def catch_delivery_errors(message, hosts = [])
       yield
     rescue => error
-      message = _('%{message} for Hosts %{hosts}') % {:message => message, :hosts => hosts.map(&:name).to_sentence}
+      message = _('%{message} for Hosts %{hosts}') % { :message => message, :hosts => hosts.map(&:name).to_sentence }
       Foreman::Logging.exception(message, error)
     end
 
@@ -31,7 +30,7 @@ module ExpireHostsNotifications
         end
       end
       unless deleted_hosts.empty?
-        ExpireHostsNotifications.hosts_by_user(deleted_hosts).each do |user_id, hosts_hash|
+        ExpireHostsNotifications.hosts_by_user(deleted_hosts).each do |_user_id, hosts_hash|
           catch_delivery_errors(_('Failed to deliver deleted hosts notification'), deleted_hosts) do
             ExpireHostsMailer.deleted_hosts_notification(hosts_hash['email'], hosts_hash['hosts']).deliver_now
           end
@@ -63,7 +62,7 @@ module ExpireHostsNotifications
       end
       unless stopped_hosts.empty?
         delete_date = (Date.today + self.days_to_delete_after_expired.to_i)
-        hosts_by_user(stopped_hosts).each do |user_id, hosts_hash|
+        hosts_by_user(stopped_hosts).each do |_user_id, hosts_hash|
           catch_delivery_errors(_('Failed to deliver stopped hosts notification'), stopped_hosts) do
             ExpireHostsMailer.stopped_hosts_notification(hosts_hash['email'], delete_date, hosts_hash['hosts']).deliver_now
           end
@@ -81,7 +80,7 @@ module ExpireHostsNotifications
       expiry_date        = (Date.today + days_before_expiry)
       notifiable_hosts   = Host.with_expire_date(expiry_date)
       return if notifiable_hosts.empty?
-      hosts_by_user(notifiable_hosts).each do |user_id, hosts_hash|
+      hosts_by_user(notifiable_hosts).each do |_user_id, hosts_hash|
         catch_delivery_errors(_('Failed to deliver expiring hosts notification'), notifiable_hosts) do
           ExpireHostsMailer.expiry_warning_notification(hosts_hash['email'], expiry_date, hosts_hash['hosts']).deliver_now
         end

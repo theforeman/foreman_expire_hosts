@@ -44,7 +44,7 @@ class HostsControllerTest < ActionController::TestCase
 
     test 'should add expiration date to host' do
       expiration_date = Date.today + 14
-      put :update, { :id => host.name, :host => {:expired_on => expiration_date} }, set_session_user
+      put :update, { :id => host.name, :host => { :expired_on => expiration_date } }, set_session_user
       h = Host.find(host.id)
       assert_equal expiration_date, h.expired_on
     end
@@ -60,7 +60,7 @@ class HostsControllerTest < ActionController::TestCase
 
     test 'show a host selection' do
       host_ids = @hosts.map(&:id)
-      xhr :post, :select_multiple_expiration, {:host_ids => host_ids}, set_session_user
+      xhr :post, :select_multiple_expiration, { :host_ids => host_ids }, set_session_user
       assert_response :success
       @hosts.each do |host|
         assert response.body =~ /#{host.name}/m

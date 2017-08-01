@@ -52,3 +52,18 @@ Style/EachWithObject:
 
 Metrics/ParameterLists:
   Enabled: false
+
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+Style/SymbolArray:
+  Enabled: false
+
+Style/FormatString:
+  Enabled: false
+
+Style/FormatStringToken:
+  Enabled: false
+
+Style/HashSyntax:
+  Enabled: false

@@ -21,7 +21,7 @@ module ForemanExpireHosts
       require_dependency File.expand_path('../../../app/models/setting/expire_hosts.rb', __FILE__) if (Setting.table_exists? rescue(false))
     end
 
-    initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |app|
+    initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_expire_hosts do
         requires_foreman '>= 1.15'
         register_custom_status HostStatus::ExpirationStatus
@@ -31,11 +31,11 @@ module ForemanExpireHosts
 
         security_block :foreman_expire_hosts do
           permission :edit_host_expiry,
-            {},
-            :resource_type => 'Host'
+                     {},
+                     :resource_type => 'Host'
           permission :edit_hosts,
-            {:hosts => [:select_multiple_expiration, :update_multiple_expiration]},
-            :resource_type => 'Host'
+                     { :hosts => [:select_multiple_expiration, :update_multiple_expiration] },
+                     :resource_type => 'Host'
         end
       end
     end

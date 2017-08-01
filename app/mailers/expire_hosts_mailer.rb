@@ -1,5 +1,4 @@
 class ExpireHostsMailer < ApplicationMailer
-
   default :content_type => 'text/html', :from => Setting[:email_reply_address] || 'noreply@your-foreman.com'
 
   def deleted_hosts_notification(emails, hosts)
