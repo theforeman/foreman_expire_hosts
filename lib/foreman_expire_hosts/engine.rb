@@ -29,14 +29,13 @@ module ForemanExpireHosts
         # strong parameters
         parameter_filter Host::Managed, :expired_on
 
-        security_block :hosts do
-          permission :edit_hosts, {:hosts => [:select_multiple_expiration, :update_multiple_expiration]}
-        end
-
         security_block :foreman_expire_hosts do
           permission :edit_host_expiry,
-                     {},
-                     :resource_type => 'Host'
+            {},
+            :resource_type => 'Host'
+          permission :edit_hosts,
+            {:hosts => [:select_multiple_expiration, :update_multiple_expiration]},
+            :resource_type => 'Host'
         end
       end
     end
