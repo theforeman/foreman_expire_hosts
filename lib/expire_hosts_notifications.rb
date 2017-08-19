@@ -13,17 +13,13 @@ module ExpireHostsNotifications
           failed_delete_hosts << deletable_host
         end
       end
-      unless deleted_hosts.empty?
-        hosts_by_recipient(deleted_hosts).each do |recipient, hosts|
-          catch_delivery_errors(_('Failed to deliver deleted hosts notification'), deleted_hosts) do
-            ExpireHostsMailer.deleted_hosts_notification(recipient, hosts).deliver_now
-          end
-        end
-      end
-      return if failed_delete_hosts.empty?
-      catch_delivery_errors(_('Failed to deliver deleted hosts notification failed status'), failed_delete_hosts) do
-        ExpireHostsMailer.failed_to_delete_hosts_notification(self.admin_email, failed_delete_hosts).deliver_now
-      end
+      ForemanExpireHosts::Notification::DeletedHosts.new(
+        :hosts => deleted_hosts
+      ).deliver
+      ForemanExpireHosts::Notification::FailedDeletedHosts.new(
+        :hosts => failed_delete_hosts,
+        :to => User.anonymous_admin
+      ).deliver
     end
 
     def stop_expired_hosts
@@ -44,18 +40,15 @@ module ExpireHostsNotifications
           failed_stop_hosts << stoppable_host
         end
       end
-      unless stopped_hosts.empty?
-        delete_date = (Date.today + self.days_to_delete_after_expired.to_i)
-        hosts_by_recipient(stopped_hosts).each do |recipient, hosts|
-          catch_delivery_errors(_('Failed to deliver stopped hosts notification'), stopped_hosts) do
-            ExpireHostsMailer.stopped_hosts_notification(recipient, delete_date, hosts).deliver_now
-          end
-        end
-      end
-      return if failed_stop_hosts.empty?
-      catch_delivery_errors(_('Failed to deliver stopped hosts notification failed status'), failed_stop_hosts) do
-        ExpireHostsMailer.failed_to_stop_hosts_notification(self.admin_email, failed_stop_hosts).deliver_now
-      end
+      delete_date = (Date.today + self.days_to_delete_after_expired.to_i)
+      ForemanExpireHosts::Notification::StoppedHosts.new(
+        :hosts => stopped_hosts,
+        :delete_date => delete_date
+      ).deliver
+      ForemanExpireHosts::Notification::FailedStoppedHosts.new(
+        :hosts => failed_stop_hosts,
+        :to => User.anonymous_admin
+      ).deliver
     end
 
     def deliver_expiry_warning_notification(num = 1) # notify1_days_before_expiry
@@ -63,39 +56,15 @@ module ExpireHostsNotifications
       days_before_expiry = Setting["notify#{num}_days_before_host_expiry"].to_i
       expiry_date        = (Date.today + days_before_expiry)
       notifiable_hosts   = Host.with_expire_date(expiry_date).preload(:owner)
-      return if notifiable_hosts.empty?
 
-      hosts_by_recipient(notifiable_hosts).each do |recipient, hosts|
-        catch_delivery_errors(_('Failed to deliver expiring hosts notification'), notifiable_hosts) do
-          ExpireHostsMailer.expiry_warning_notification(recipient, expiry_date, hosts).deliver_now
-        end
-      end
-    end
-
-    def hosts_by_recipient(hosts)
-      hosts.each_with_object({}) do |host, hash|
-        recipients = host.owner.try(:recipients) || []
-        recipients = self.admin_email unless recipients.present?
-        recipients.each do |recipient|
-          hash[recipient] ||= []
-          hash[recipient] << host
-        end
-      end
-    end
-
-    def admin_email
-      [(Setting[:host_expiry_email_recipients] || Setting[:administrator])]
+      ForemanExpireHosts::Notification::ExpiryWarning.new(
+        :hosts => notifiable_hosts,
+        :expiry_date => expiry_date
+      ).deliver
     end
 
     def days_to_delete_after_expired
       Setting[:days_to_delete_after_host_expiration].to_i
-    end
-
-    def catch_delivery_errors(message, hosts = [])
-      yield
-    rescue SocketError, Net::SMTPError => error
-      message = _('%{message} for Hosts %{hosts}') % { :message => message, :hosts => hosts.map(&:name).to_sentence }
-      Foreman::Logging.exception(message, error)
     end
   end
 end
