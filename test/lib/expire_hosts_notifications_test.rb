@@ -119,16 +119,4 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       assert_equal 1, ActionMailer::Base.deliveries.flat_map(&:subject).uniq.count
     end
   end
-
-  context '#catch_delivery_errors' do
-    test 'should catch and log errors' do
-      host1 = OpenStruct.new(:name => 'Alpha')
-      host2 = OpenStruct.new(:name => 'Bravo')
-      hosts = [host1, host2]
-      Foreman::Logging.expects(:exception).with('failure for Hosts Alpha and Bravo', anything)
-      ExpireHostsNotifications.catch_delivery_errors('failure', hosts) do
-        raise SocketError.new
-      end
-    end
-  end
 end
