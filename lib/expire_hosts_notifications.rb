@@ -1,23 +1,7 @@
 module ExpireHostsNotifications
   class << self
-    def admin_email
-      [(Setting[:host_expiry_email_recipients] || Setting[:administrator])]
-    end
-
-    def days_to_delete_after_expired
-      Setting[:days_to_delete_after_host_expiration].to_i
-    end
-
-    def catch_delivery_errors(message, hosts = [])
-      yield
-    rescue => error
-      message = _('%{message} for Hosts %{hosts}') % { :message => message, :hosts => hosts.map(&:name).to_sentence }
-      Foreman::Logging.exception(message, error)
-    end
-
-    # This method to deliver deleted host details to its owner
     def delete_expired_hosts
-      deletable_hosts     = Host.expired_past_grace_period
+      deletable_hosts     = Host.expired_past_grace_period.preload(:owner)
       failed_delete_hosts = []
       deleted_hosts       = []
       deletable_hosts.each do |deletable_host|
@@ -30,9 +14,9 @@ module ExpireHostsNotifications
         end
       end
       unless deleted_hosts.empty?
-        ExpireHostsNotifications.hosts_by_user(deleted_hosts).each do |_user_id, hosts_hash|
+        hosts_by_recipient(deleted_hosts).each do |recipient, hosts|
           catch_delivery_errors(_('Failed to deliver deleted hosts notification'), deleted_hosts) do
-            ExpireHostsMailer.deleted_hosts_notification(hosts_hash['email'], hosts_hash['hosts']).deliver_now
+            ExpireHostsMailer.deleted_hosts_notification(recipient, hosts).deliver_now
           end
         end
       end
@@ -43,7 +27,7 @@ module ExpireHostsNotifications
     end
 
     def stop_expired_hosts
-      stoppable_hosts   = Host.expired
+      stoppable_hosts   = Host.expired.preload(:owner)
       failed_stop_hosts = []
       stopped_hosts     = []
       stoppable_hosts.each do |stoppable_host|
@@ -62,9 +46,9 @@ module ExpireHostsNotifications
       end
       unless stopped_hosts.empty?
         delete_date = (Date.today + self.days_to_delete_after_expired.to_i)
-        hosts_by_user(stopped_hosts).each do |_user_id, hosts_hash|
+        hosts_by_recipient(stopped_hosts).each do |recipient, hosts|
           catch_delivery_errors(_('Failed to deliver stopped hosts notification'), stopped_hosts) do
-            ExpireHostsMailer.stopped_hosts_notification(hosts_hash['email'], delete_date, hosts_hash['hosts']).deliver_now
+            ExpireHostsMailer.stopped_hosts_notification(recipient, delete_date, hosts).deliver_now
           end
         end
       end
@@ -78,42 +62,40 @@ module ExpireHostsNotifications
       return unless [1, 2].include?(num)
       days_before_expiry = Setting["notify#{num}_days_before_host_expiry"].to_i
       expiry_date        = (Date.today + days_before_expiry)
-      notifiable_hosts   = Host.with_expire_date(expiry_date)
+      notifiable_hosts   = Host.with_expire_date(expiry_date).preload(:owner)
       return if notifiable_hosts.empty?
-      hosts_by_user(notifiable_hosts).each do |_user_id, hosts_hash|
+
+      hosts_by_recipient(notifiable_hosts).each do |recipient, hosts|
         catch_delivery_errors(_('Failed to deliver expiring hosts notification'), notifiable_hosts) do
-          ExpireHostsMailer.expiry_warning_notification(hosts_hash['email'], expiry_date, hosts_hash['hosts']).deliver_now
+          ExpireHostsMailer.expiry_warning_notification(recipient, expiry_date, hosts).deliver_now
         end
       end
     end
 
-    def hosts_by_user(hosts)
-      emails     = self.admin_email
-      hosts_hash = {}
-      hosts.each do |host|
-        if host.owner_type == 'User'
-          unless hosts_hash.key?(host.owner_id.to_s)
-            email_recipients = emails + [host.owner.mail]
-            hosts_hash[host.owner_id.to_s] = { 'id' => host.owner_id, 'name' => host.owner.name, 'email' => email_recipients, 'hosts' => [] }
-          end
-          hosts_hash[host.owner_id.to_s]['hosts'] << host
-        elsif host.owner_type == 'Usergroup'
-          host.owner.users.each do |owner|
-            unless hosts_hash.key?(owner.id.to_s)
-              email_recipients = emails + [owner.mail]
-              hosts_hash[owner.id.to_s] = { 'id' => owner.id, 'name' => owner.name, 'email' => email_recipients, 'hosts' => [] }
-            end
-            hosts_hash[owner.id.to_s]['hosts'] << host
-          end
-        else
-          email = (!emails.empty? ? emails : [Setting[:administrator]])
-          unless hosts_hash.key?(owner.id.to_s)
-            hosts_hash['admin'] = { 'id' => nil, 'name' => 'Admin', 'email' => email, 'hosts' => [] }
-          end
-          hosts_hash['admin']['hosts'] << host
+    def hosts_by_recipient(hosts)
+      hosts.each_with_object({}) do |host, hash|
+        recipients = host.owner.try(:recipients) || []
+        recipients = self.admin_email unless recipients.present?
+        recipients.each do |recipient|
+          hash[recipient] ||= []
+          hash[recipient] << host
         end
       end
-      hosts_hash
+    end
+
+    def admin_email
+      [(Setting[:host_expiry_email_recipients] || Setting[:administrator])]
+    end
+
+    def days_to_delete_after_expired
+      Setting[:days_to_delete_after_host_expiration].to_i
+    end
+
+    def catch_delivery_errors(message, hosts = [])
+      yield
+    rescue SocketError, Net::SMTPError => error
+      message = _('%{message} for Hosts %{hosts}') % { :message => message, :hosts => hosts.map(&:name).to_sentence }
+      Foreman::Logging.exception(message, error)
     end
   end
 end
