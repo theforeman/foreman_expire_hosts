@@ -19,6 +19,8 @@ Metrics/AbcSize:
 # Configuration parameters: CountComments, ExcludedMethods.
 Metrics/BlockLength:
   Max: 35
+  Exclude:
+    - 'test/**/*.rb'
 
 # Offense count: 3
 Metrics/CyclomaticComplexity:

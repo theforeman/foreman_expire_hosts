@@ -14,7 +14,11 @@ module ForemanExpireHosts
         _('Host Expiry Warning Notification')
       end
 
-      def build_notification(recipient_mail, hosts)
+      def build_ui_notification(host)
+        ForemanExpireHosts::UINotifications::Hosts::ExpiryWarning.new(host)
+      end
+
+      def build_mail_notification(recipient_mail, hosts)
         ExpireHostsMailer.expiry_warning_notification(recipient_mail, expiry_date, hosts)
       end
     end

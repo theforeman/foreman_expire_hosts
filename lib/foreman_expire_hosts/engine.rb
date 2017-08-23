@@ -52,6 +52,12 @@ module ForemanExpireHosts
       end
     end
 
+    rake_tasks do
+      Rake::Task['db:seed'].enhance do
+        ForemanExpireHosts::Engine.load_seed
+      end
+    end
+
     # Precompile any JS or CSS files under app/assets/
     # If requiring files from each other, list them explicitly here to avoid precompiling the same
     # content twice.

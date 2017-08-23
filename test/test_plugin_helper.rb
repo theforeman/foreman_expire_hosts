@@ -6,6 +6,11 @@ require 'database_cleaner'
 FactoryGirl.definition_file_paths << File.join(File.dirname(__FILE__), 'factories')
 FactoryGirl.reload
 
+# load notification seeds.
+require File.join(
+  File.dirname(__FILE__), '..', 'db', 'seeds.d', '80_expire_hosts_ui_notification'
+)
+
 # Foreman's setup doesn't handle cleaning up for Minitest::Spec
 DatabaseCleaner.strategy = :transaction
 

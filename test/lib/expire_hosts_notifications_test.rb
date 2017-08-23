@@ -62,6 +62,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
   context '#stop_expired_hosts' do
     let(:power_mock) { mock('power') }
     let(:host) { FactoryGirl.create(:host, :expired, :on_compute_resource, :owner => user) }
+    let(:blueprint) { NotificationBlueprint.find_by(name: 'expire_hosts_stopped_host') }
     setup do
       power_mock.stubs(:ready?).returns(true)
       host.unstub(:queue_compute)
@@ -76,6 +77,13 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       assert_includes ActionMailer::Base.deliveries.first.subject, 'Stopped expired hosts'
     end
 
+    test 'should send a ui notification per stopped host' do
+      power_mock.expects(:stop).returns(true)
+      assert_difference('blueprint.notifications.count', 1) do
+        ExpireHostsNotifications.stop_expired_hosts
+      end
+    end
+
     test 'should send failure message if host cannot be stopped' do
       power_mock.expects(:stop).returns(false)
       ExpireHostsNotifications.stop_expired_hosts
@@ -85,9 +93,35 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
   end
 
   context '#deliver_expiry_warning_notification' do
+    let(:blueprint) { NotificationBlueprint.find_by(name: 'expire_hosts_expiry_warning') }
+    let(:hosts) { FactoryGirl.create_list(:host, 2, :expires_in_a_week, :owner => user) }
+
     setup do
       Setting['notify1_days_before_host_expiry'] = 7
-      FactoryGirl.create_list(:host, 2, :expires_in_a_week, :owner => user)
+      hosts
+    end
+
+    test 'should send a ui notification per host' do
+      assert_difference('blueprint.notifications.count', 2) do
+        ExpireHostsNotifications.deliver_expiry_warning_notification
+      end
+      hosts.each do |host|
+        notification = Notification.find_by(
+          notification_blueprint_id: blueprint.id,
+          subject_id: host.id,
+          subject_type: 'Host::Base'
+        )
+        assert_equal 1, notification.notification_recipients.where(user_id: user.id).count
+      end
+    end
+
+    test 'should redisplay read ui notification' do
+      ExpireHostsNotifications.deliver_expiry_warning_notification
+      notification = Notification.find_by(notification_blueprint_id: blueprint.id, subject_id: hosts.first.id)
+      assert_not_nil notification
+      assert_equal 1, NotificationRecipient.where(notification_id: notification.id).update_all(seen: true) # rubocop:disable Rails/SkipsModelValidations
+      ExpireHostsNotifications.deliver_expiry_warning_notification
+      assert_equal 1, NotificationRecipient.where(notification_id: notification.id, seen: false).count
     end
 
     test 'should send a single notification' do

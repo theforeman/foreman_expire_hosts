@@ -14,7 +14,11 @@ module ForemanExpireHosts
         _('Stopped Hosts Notification')
       end
 
-      def build_notification(recipient_mail, hosts)
+      def build_ui_notification(host)
+        ForemanExpireHosts::UINotifications::Hosts::StoppedHost.new(host)
+      end
+
+      def build_mail_notification(recipient_mail, hosts)
         ExpireHostsMailer.stopped_hosts_notification(recipient_mail, delete_date, hosts)
       end
     end
