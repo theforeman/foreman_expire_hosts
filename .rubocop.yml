@@ -67,3 +67,7 @@ Style/FormatStringToken:
 
 Style/HashSyntax:
   Enabled: false
+
+# May be enabled for Foreman >= 1.16
+Rails/ApplicationRecord:
+  Enabled: false

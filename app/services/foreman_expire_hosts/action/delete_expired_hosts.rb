@@ -8,7 +8,7 @@ module ForemanExpireHosts
       end
 
       def action(host)
-        host.destroy
+        SafeDestroy.new(host).destroy!
       end
 
       def success_notification
