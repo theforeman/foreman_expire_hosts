@@ -18,7 +18,7 @@ module ForemanExpireHosts
       def deliver_mail_notifications
         hosts_by_recipient(all_hosts).each do |recipient, hosts|
           begin
-            build_mail_notification(recipient_mail(recipient), hosts).deliver_now
+            build_mail_notification(recipient, hosts).deliver_now
           rescue SocketError, Net::SMTPError => error
             message = _('Failed to deliver %{notification_name} for Hosts %{hosts}') % {
               :notification_name => humanized_name,
@@ -42,11 +42,6 @@ module ForemanExpireHosts
         _('Notification')
       end
 
-      def recipient_mail(recipient)
-        return recipient.mail if recipient.mail.present?
-        admin_email
-      end
-
       def hosts_by_recipient(hosts)
         hosts.each_with_object({}) do |host, hash|
           recipients = recipients_for_host(host)
@@ -62,10 +57,6 @@ module ForemanExpireHosts
         return [User.anonymous_admin] if host.owner.blank?
         return [host.owner] if host.owner_type == 'User'
         host.owner.all_users
-      end
-
-      def admin_email
-        (Setting[:host_expiry_email_recipients] || Setting[:administrator])
       end
     end
   end
