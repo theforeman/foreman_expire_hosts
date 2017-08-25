@@ -7,8 +7,8 @@ module ForemanExpireHosts
         _('Deleted Hosts Notification')
       end
 
-      def build_mail_notification(recipient_mail, hosts)
-        ExpireHostsMailer.deleted_hosts_notification(recipient_mail, hosts)
+      def build_mail_notification(recipient, hosts)
+        ExpireHostsMailer.deleted_hosts_notification(recipient, hosts)
       end
     end
   end

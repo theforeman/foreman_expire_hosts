@@ -7,8 +7,8 @@ module ForemanExpireHosts
         _('Failed Stopped Hosts Notification')
       end
 
-      def build_mail_notification(recipient_mail, hosts)
-        ExpireHostsMailer.failed_to_stop_hosts_notification(recipient_mail, hosts)
+      def build_mail_notification(recipient, hosts)
+        ExpireHostsMailer.failed_to_stop_hosts_notification(recipient, hosts)
       end
     end
   end
