@@ -1,4 +1,7 @@
-<%= _('The following hosts will be expired on %s. Please change expiry date if you want to keep these hosts alive.') % @expiry_date %>
+<%= _('The following hosts will be expired on %s.') % @expiry_date %>
+<% if @authorized_for_expiry_date_change %>
+<%= _('Please change their expiry date if you want to keep these hosts alive.') %>
+<% end %>
 <br/><br/>
 
 <%= render 'hosts_table', :hosts => @hosts, :link_to_hosts => true %>

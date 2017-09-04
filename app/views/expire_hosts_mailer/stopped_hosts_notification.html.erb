@@ -1,4 +1,7 @@
-<%= _('The following hosts have been expired in Foreman and will be stopped for now. These hosts will be destroyed on %s. Please change their expiry date and power them on if you want to keep the hosts.') % l(@delete_date) %>
+<%= _('The following hosts have been expired in Foreman and will be stopped for now. These hosts will be destroyed on %s.') % l(@delete_date) %>
+<% if @authorized_for_expiry_date_change %>
+<%= _('Please change their expiry date and power them on if you want to keep the hosts.') %>
+<% end %>
 <br/><br/>
 
 <%= render 'hosts_table', :hosts => @hosts, :link_to_hosts => true %>

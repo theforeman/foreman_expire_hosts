@@ -34,6 +34,16 @@ class ExpireHostMailerTest < ActionMailer::TestCase
     test 'subject should be set' do
       assert_includes mail.subject, 'Stopped expired hosts in Foreman'
     end
+
+    test 'should show mitigation text if authorized' do
+      ForemanExpireHosts::ExpiryEditAuthorizer.any_instance.stubs(:authorized?).returns(true)
+      assert_includes mail.body.to_s, 'Please change their expiry date'
+    end
+
+    test 'should not show mitigation text if not authorized' do
+      ForemanExpireHosts::ExpiryEditAuthorizer.any_instance.stubs(:authorized?).returns(false)
+      assert_not_includes mail.body.to_s, 'Please change their expiry date'
+    end
   end
 
   context 'failed to stop hosts notification' do
@@ -49,6 +59,16 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
     test 'subject should be set' do
       assert_includes mail.subject, 'Expiring hosts in foreman'
+    end
+
+    test 'should show mitigation text if authorized' do
+      ForemanExpireHosts::ExpiryEditAuthorizer.any_instance.stubs(:authorized?).returns(true)
+      assert_includes mail.body.to_s, 'Please change their expiry date'
+    end
+
+    test 'should not show mitigation text if not authorized' do
+      ForemanExpireHosts::ExpiryEditAuthorizer.any_instance.stubs(:authorized?).returns(false)
+      assert_not_includes mail.body.to_s, 'Please change their expiry date'
     end
   end
 
