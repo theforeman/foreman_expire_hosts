@@ -1,4 +1,6 @@
 class Setting::ExpireHosts < Setting
+  Setting::BLANK_ATTRS.push('host_expiry_email_recipients')
+
   def self.load_defaults
     # Check the table exists
     return unless super
@@ -10,7 +12,7 @@ class Setting::ExpireHosts < Setting
         self.set('notify1_days_before_host_expiry', N_('Send first notification to owner of hosts about his hosts expiring in given days. Must be integer only'), 7, N_('First expiry notification')),
         self.set('notify2_days_before_host_expiry', N_('Send second notification to owner of hosts about his hosts expiring in given days. Must be integer only'), 1, N_('Second expiry notification')),
         self.set('days_to_delete_after_host_expiration', N_('Delete expired hosts after given days of hosts expiry date. Must be integer only'), 3, N_('Expiry grace period in days')),
-        self.set('host_expiry_email_recipients', N_('All notifications will be delivered to its owner. If any other users/admins need to receive those expiry wanting notifications then those emails can be configured here. This must be string and multiple emails can give with coma(,) separated'), 'foreman-admin@your_foreman.com', N_('Expiry e-mail recipients'))
+        self.set('host_expiry_email_recipients', N_('All notifications will be delivered to its owner. If any other users/admins need to receive those expiry warning notifications then those emails can be configured comma separated here.'), nil, N_('Expiry e-mail recipients'))
       ].each { |s| self.create! s.update(:category => 'Setting::ExpireHosts') }
     end
 

@@ -49,12 +49,13 @@ class ExpireHostsMailer < ApplicationMailer
     recipient = opts[:recipient]
     subject = opts[:subject]
     hosts = opts[:hosts]
+    user = user_for_recipient(recipient)
     @hosts = hosts
     @authorized_for_expiry_date_change = ForemanExpireHosts::ExpiryEditAuthorizer.new(
-      :user => recipient,
+      :user => user,
       :hosts => hosts
     ).authorized?
-    set_locale_for(recipient) do
+    set_locale_for(user) do
       mail(
         :to => recipient_mail(recipient),
         :subject => _(subject),
@@ -65,12 +66,24 @@ class ExpireHostsMailer < ApplicationMailer
     end
   end
 
+  def user_for_recipient(recipient)
+    case recipient
+    when Array
+      User.anonymous_admin
+    when User
+      recipient
+    else
+      raise Foreman::Exception.new(N_('Cannot map recipient %s to user'), recipient.inspect)
+    end
+  end
+
   def recipient_mail(recipient)
+    return recipient if recipient.is_a?(Array)
     return recipient.mail if recipient.mail.present?
     admin_email
   end
 
   def admin_email
-    (Setting[:host_expiry_email_recipients] || Setting[:administrator])
+    Setting[:administrator]
   end
 end

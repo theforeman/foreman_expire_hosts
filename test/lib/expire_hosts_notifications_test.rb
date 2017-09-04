@@ -57,6 +57,22 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
         assert_includes ActionMailer::Base.deliveries.first.subject, 'Deleted expired hosts'
       end
     end
+
+    context 'with additional recipients' do
+      setup do
+        Setting[:host_expiry_email_recipients] = 'test@example.com, test2.example.com'
+        FactoryGirl.create_list(:host, 2, :expired, :owner => user)
+      end
+
+      test 'should deliver notification to additional recipients' do
+        ExpireHostsNotifications.delete_expired_hosts
+        assert_equal 3, ActionMailer::Base.deliveries.count
+        assert_includes ActionMailer::Base.deliveries.first.subject, 'Deleted expired hosts'
+        assert_includes ActionMailer::Base.deliveries.flat_map(&:to), user.mail
+        assert_includes ActionMailer::Base.deliveries.flat_map(&:to), 'test@example.com'
+        assert_includes ActionMailer::Base.deliveries.flat_map(&:to), 'test2.example.com'
+      end
+    end
   end
 
   context '#stop_expired_hosts' do
