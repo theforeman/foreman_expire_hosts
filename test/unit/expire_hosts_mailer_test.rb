@@ -78,7 +78,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
     test 'mail is delivered to admin address' do
       assert_nil recipient.mail
-      assert_equal ['foreman-admin@your_foreman.com'], mail.to
+      assert_equal ['root@some.host.fqdn'], mail.to
     end
   end
 end
