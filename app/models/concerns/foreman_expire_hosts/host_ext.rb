@@ -76,7 +76,7 @@ module ForemanExpireHosts
       return true if self.owner_type.nil? || self.owner.nil?
       Setting[:can_owner_modify_host_expiry_date] &&
         ((self.owner_type == 'User' && self.owner == User.current) ||
-         (self.owner_type == 'Usergroup' && self.owner.users.include?(User.current)))
+         (self.owner_type == 'Usergroup' && self.owner.all_users.include?(User.current)))
     end
 
     private
