@@ -1,12 +1,11 @@
 module ForemanExpireHosts
   module HostControllerExtensions
-    extend ActiveSupport::Concern
-
-    included do
-      before_filter :validate_multiple_expiration, :only => :update_multiple_expiration
-      before_filter :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
-      alias_method_chain :action_permission, :expire_hosts
-      alias_method :find_multiple_with_expire_hosts, :find_multiple
+    def self.prepended(base)
+      base.class_eval do
+        before_filter :validate_multiple_expiration, :only => :update_multiple_expiration
+        before_filter :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
+        alias_method :find_multiple_with_expire_hosts, :find_multiple
+      end
     end
 
     def select_multiple_expiration; end
@@ -61,12 +60,12 @@ module ForemanExpireHosts
       end
     end
 
-    def action_permission_with_expire_hosts
+    def action_permission
       case params[:action]
       when 'select_multiple_expiration', 'update_multiple_expiration'
         :edit
       else
-        action_permission_without_expire_hosts
+        super
       end
     end
   end
