@@ -1,14 +1,11 @@
 module ForemanExpireHosts
   module HostsHelperExtensions
-    extend ActiveSupport::Concern
-
-    included do
-      alias_method_chain :multiple_actions, :expire_hosts
-    end
-
-    def multiple_actions_with_expire_hosts
-      return multiple_actions_without_expire_hosts unless authorized_for(:controller => :hosts, :action => :edit)
-      multiple_actions_without_expire_hosts + [[_('Change Expiration'), select_multiple_expiration_hosts_path]]
+    def multiple_actions
+      actions = super
+      if authorized_for(:controller => :hosts, :action => :edit)
+        actions << [_('Change Expiration'), select_multiple_expiration_hosts_path]
+      end
+      actions
     end
 
     def host_expiry_warning_message(host)
