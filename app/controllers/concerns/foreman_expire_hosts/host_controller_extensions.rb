@@ -20,7 +20,7 @@ module ForemanExpireHosts
         begin
           host.expired_on = expiration_date
           host.save!
-        rescue => error
+        rescue StandardError => error
           failed_hosts[host.name] = error
           message = if expiration_date.present?
                       _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }

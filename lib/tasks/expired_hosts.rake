@@ -32,7 +32,7 @@ namespace :foreman_expire_hosts do
                          "#{ForemanExpireHosts::Engine.root}/lib/**/*.rb",
                          "#{ForemanExpireHosts::Engine.root}/test/**/*.rb"]
       end
-    rescue
+    rescue StandardError
       puts 'Rubocop not loaded.'
     end
 
