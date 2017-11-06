@@ -5,8 +5,8 @@ class ExpireHostMailerTest < ActionMailer::TestCase
     setup_settings
   end
 
-  let(:recipient) { FactoryGirl.create(:user, :with_mail) }
-  let(:hosts) { FactoryGirl.create_list(:host, 2, :managed) }
+  let(:recipient) { FactoryBot.create(:user, :with_mail) }
+  let(:hosts) { FactoryBot.create_list(:host, 2, :managed) }
 
   context 'deleted hosts notification' do
     let(:mail) { ExpireHostsMailer.deleted_hosts_notification(recipient, hosts).deliver_now }
@@ -73,7 +73,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
   end
 
   context 'user without mail address' do
-    let(:recipient) { FactoryGirl.create(:user) }
+    let(:recipient) { FactoryBot.create(:user) }
     let(:mail) { ExpireHostsMailer.expiry_warning_notification(recipient, Date.today, hosts).deliver_now }
 
     test 'mail is delivered to admin address' do

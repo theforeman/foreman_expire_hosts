@@ -1,4 +1,4 @@
-FactoryGirl.modify do
+FactoryBot.modify do
   factory :host do
     trait :without_validation do
       # Turn off validation so we can create a host with an expiry date in the past

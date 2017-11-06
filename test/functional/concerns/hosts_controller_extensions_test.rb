@@ -40,7 +40,7 @@ class HostsControllerTest < ActionController::TestCase
   end
 
   describe 'updating a host' do
-    let(:host) { FactoryGirl.create(:host) }
+    let(:host) { FactoryBot.create(:host) }
 
     test 'should add expiration date to host' do
       expiration_date = Date.today + 14
@@ -53,7 +53,7 @@ class HostsControllerTest < ActionController::TestCase
   describe 'setting expiration date on multiple hosts' do
     before do
       as_admin do
-        @hosts = FactoryGirl.create_list(:host, 2, :with_puppet)
+        @hosts = FactoryBot.create_list(:host, 2, :with_puppet)
       end
       @request.env['HTTP_REFERER'] = hosts_path
     end
