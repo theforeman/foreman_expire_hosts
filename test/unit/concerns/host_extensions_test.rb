@@ -4,7 +4,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
   EXPIRATION_SCOPES = ['expiring', 'expired', 'expiring_today', 'expired_past_grace_period'].freeze
 
   setup do
-    User.current = FactoryGirl.build(:user, :admin)
+    User.current = FactoryBot.build(:user, :admin)
     setup_settings
   end
 
@@ -14,7 +14,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not require expired on' do
-      host = FactoryGirl.build(:host)
+      host = FactoryBot.build(:host)
       assert host.valid?, "Should be valid without expiration date: : #{host.errors.messages}"
     end
   end
@@ -25,7 +25,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should require expired on' do
-      host = FactoryGirl.build(:host)
+      host = FactoryBot.build(:host)
       refute host.valid?, "Can not be valid without expiration date: #{host.errors.messages}"
       assert_includes host.errors.messages.keys, :expired_on
     end
@@ -33,8 +33,8 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'changing expiration date for user owned host' do
     setup do
-      @user = FactoryGirl.create(:user)
-      @host = FactoryGirl.create(:host, :expired, :owner => @user)
+      @user = FactoryBot.create(:user)
+      @host = FactoryBot.create(:host, :expired, :owner => @user)
     end
 
     test 'admin should be able to change expiration date' do
@@ -43,7 +43,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'user should not be able to change expiration date' do
-      as_user FactoryGirl.build(:user) do
+      as_user FactoryBot.build(:user) do
         @host.expired_on = Date.today + 5
         refute_valid @host
       end
@@ -67,13 +67,13 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
   end
 
   context 'changing expiration date for user' do
-    let(:host) { FactoryGirl.create(:host, :managed) }
+    let(:host) { FactoryBot.create(:host, :managed) }
 
     context 'with edit_host_expiry permission' do
       let(:permission) { Permission.find_by(name: 'edit_host_expiry') }
-      let(:filter) { FactoryGirl.create(:filter, :permissions => [permission]) }
-      let(:role) { FactoryGirl.create(:role, :filters => [filter]) }
-      let(:user) { FactoryGirl.create(:user, :organizations => [host.organization], :locations => [host.location], :roles => [role]) }
+      let(:filter) { FactoryBot.create(:filter, :permissions => [permission]) }
+      let(:role) { FactoryBot.create(:role, :filters => [filter]) }
+      let(:user) { FactoryBot.create(:user, :organizations => [host.organization], :locations => [host.location], :roles => [role]) }
 
       test 'user can change expiry date' do
         as_user user do
@@ -83,7 +83,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     context 'without edit_host_expiry permission' do
-      let(:user) { FactoryGirl.build(:user, :organizations => [host.organization], :locations => [host.location]) }
+      let(:user) { FactoryBot.build(:user, :organizations => [host.organization], :locations => [host.location]) }
 
       test 'user can not change expiry date' do
         as_user user do
@@ -95,7 +95,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'a host without expiration' do
     setup do
-      @host = FactoryGirl.build(:host)
+      @host = FactoryBot.build(:host)
     end
 
     test 'should not expire' do
@@ -125,7 +125,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'a expired host' do
     setup do
-      @host = FactoryGirl.build(:host, :expired)
+      @host = FactoryBot.build(:host, :expired)
     end
 
     test 'should expire' do
@@ -155,7 +155,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'a host expiring today' do
     setup do
-      @host = FactoryGirl.build(:host, :expires_today)
+      @host = FactoryBot.build(:host, :expires_today)
     end
 
     test 'should expire' do
@@ -186,7 +186,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'a host expiring in a year' do
     setup do
-      @host = FactoryGirl.build(:host, :expires_in_a_year)
+      @host = FactoryBot.build(:host, :expires_in_a_year)
     end
 
     test 'should expire' do
@@ -217,7 +217,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   context 'a host in grace period' do
     setup do
-      @host = FactoryGirl.build(:host, :expired_grace)
+      @host = FactoryBot.build(:host, :expired_grace)
     end
 
     test 'should expire' do
