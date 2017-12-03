@@ -38,6 +38,8 @@ module ForemanExpireHosts
                      { :hosts => [:select_multiple_expiration, :update_multiple_expiration] },
                      :resource_type => 'Host'
         end
+
+        extend_rabl_template 'api/v2/hosts/main', 'api/v2/hosts/expiration'
       end
     end
 
@@ -47,6 +49,7 @@ module ForemanExpireHosts
         HostsHelper.send :include, ForemanExpireHosts::HostsHelperExtensions
         HostsController.send :prepend, ForemanExpireHosts::HostControllerExtensions
         AuditsHelper.send :include, ForemanExpireHosts::AuditsHelperExtensions
+        ::Api::V2::HostsController.send :include, ForemanExpireHosts::Api::V2::HostsControllerExtensions
       rescue StandardError => e
         Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
       end
