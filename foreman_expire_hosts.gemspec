@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'deface'
 
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.51.0'
+  s.add_development_dependency 'rubocop', '0.52.0'
 end

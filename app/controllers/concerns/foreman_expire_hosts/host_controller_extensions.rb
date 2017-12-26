@@ -2,8 +2,8 @@ module ForemanExpireHosts
   module HostControllerExtensions
     def self.prepended(base)
       base.class_eval do
-        before_filter :validate_multiple_expiration, :only => :update_multiple_expiration
-        before_filter :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
+        before_action :validate_multiple_expiration, :only => :update_multiple_expiration
+        before_action :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
         alias_method :find_multiple_with_expire_hosts, :find_multiple
       end
     end

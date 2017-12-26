@@ -43,6 +43,4 @@ end
 Rake::Task[:test].enhance ['test:foreman_expire_hosts']
 
 load 'tasks/jenkins.rake'
-if Rake::Task.task_defined?(:'jenkins:unit')
-  Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts', 'foreman_expire_hosts:rubocop']
-end
+Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts', 'foreman_expire_hosts:rubocop'] if Rake::Task.task_defined?(:'jenkins:unit')
