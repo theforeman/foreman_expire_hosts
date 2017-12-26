@@ -2,9 +2,7 @@ module ForemanExpireHosts
   module HostsHelperExtensions
     def multiple_actions
       actions = super
-      if authorized_for(:controller => :hosts, :action => :edit)
-        actions << [_('Change Expiration'), select_multiple_expiration_hosts_path]
-      end
+      actions << [_('Change Expiration'), select_multiple_expiration_hosts_path] if authorized_for(:controller => :hosts, :action => :edit)
       actions
     end
 

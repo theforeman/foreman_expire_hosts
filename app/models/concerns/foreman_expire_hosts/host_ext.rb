@@ -7,7 +7,7 @@ module ForemanExpireHosts
 
       validates :expired_on, :presence => true, :if => -> { Setting[:is_host_expiry_date_mandatory] }
 
-      has_one :expiration_status_object, :class_name => 'HostStatus::ExpirationStatus', :foreign_key => 'host_id'
+      has_one :expiration_status_object, :class_name => 'HostStatus::ExpirationStatus', :foreign_key => 'host_id', :inverse_of => :host
 
       before_validation :refresh_expiration_status
 
@@ -23,17 +23,13 @@ module ForemanExpireHosts
     def validate_expired_on
       if self.expires?
         begin
-          unless expired_on.to_s.to_date > Date.today
-            errors.add(:expired_on, _('must be in the future'))
-          end
-        rescue StandardError => e
+          errors.add(:expired_on, _('must be in the future')) unless expired_on.to_s.to_date > Date.today
+        rescue StandardError
           errors.add(:expired_on, _('is invalid'))
         end
       end
       if self.changed.include?('expired_on')
-        unless can_modify_expiry_date?
-          errors.add(:expired_on, _('no permission to edit'))
-        end
+        errors.add(:expired_on, _('no permission to edit')) unless can_modify_expiry_date?
       end
       true
     end

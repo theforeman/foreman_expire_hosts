@@ -2,7 +2,7 @@ require 'test_plugin_helper'
 
 module ForemanExpireHosts
   class SafeDestroyTest < ActiveSupport::TestCase
-    class HostWithFailingCallbacks < ActiveRecord::Base
+    class HostWithFailingCallbacks < ApplicationRecord
       self.table_name = 'hosts'
       self.inheritance_column = nil
 
@@ -11,7 +11,7 @@ module ForemanExpireHosts
       private
 
       def cancel
-        false
+        throw(:abort)
       end
     end
 

@@ -2,8 +2,10 @@ inherit_from:
   - .rubocop_todo.yml
 
 AllCops:
+  TargetRubyVersion: 2.2
+  TargetRailsVersion: 5.1
   Exclude:
-    - 'doc/plugins/**'
+    - 'Rakefile'
 
 Rails:
   Enabled: true
@@ -14,10 +16,6 @@ Rails/Date:
 # Don't enforce documentation
 Style/Documentation:
   Enabled: false
-
-# Force before_filter until upgrade to Rails 4
-Rails/ActionFilter:
-  EnforcedStyle: filter
 
 Metrics/MethodLength:
   Max: 40
@@ -53,9 +51,6 @@ Style/EachWithObject:
 Metrics/ParameterLists:
   Enabled: false
 
-Rails/HttpPositionalArguments:
-  Enabled: false
-
 Style/SymbolArray:
   Enabled: false
 
@@ -74,7 +69,5 @@ Rails/HasManyOrHasOneDependent:
 Style/CommentedKeyword:
   Enabled: false
 
-
-# May be enabled for Foreman >= 1.16
-Rails/ApplicationRecord:
+Rails/LexicallyScopedActionFilter:
   Enabled: false
