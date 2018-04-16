@@ -22,5 +22,15 @@ module ForemanExpireHosts
         assert_equal 1, HostWithFailingCallbacks.all.count
       end
     end
+
+    describe 'with a host' do
+      let(:host) { FactoryBot.create(:host, :managed) }
+
+      test 'deletes a host' do
+        assert Host::Managed.find_by(id: host.id)
+        assert SafeDestroy.new(host).destroy!
+        refute Host::Managed.find_by(id: host.id)
+      end
+    end
   end
 end
