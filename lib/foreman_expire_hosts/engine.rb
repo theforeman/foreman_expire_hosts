@@ -19,7 +19,7 @@ module ForemanExpireHosts
     end
 
     initializer 'foreman_expire_hosts.load_default_settings', :before => :load_config_initializers do
-      require_dependency File.expand_path('../../../app/models/setting/expire_hosts.rb', __FILE__) if (Setting.table_exists? rescue(false))
+      require_dependency File.expand_path('../../app/models/setting/expire_hosts.rb', __dir__) if (Setting.table_exists? rescue(false))
     end
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|

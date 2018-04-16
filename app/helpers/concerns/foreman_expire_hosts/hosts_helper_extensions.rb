@@ -38,8 +38,8 @@ module ForemanExpireHosts
       end
     end
 
-    def datepicker_f(f, attr, options = {})
-      field(f, attr, options) do
+    def datepicker_f(form, attr, options = {})
+      field(form, attr, options) do
         addClass options, 'form-control'
         date = f.text_field attr, options
         addon = input_group_addon('', :class => 'glyphicon glyphicon-calendar')
