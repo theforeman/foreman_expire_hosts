@@ -60,21 +60,5 @@ module ForemanExpireHosts
         ForemanExpireHosts::Engine.load_seed
       end
     end
-
-    # Precompile any JS or CSS files under app/assets/
-    # If requiring files from each other, list them explicitly here to avoid precompiling the same
-    # content twice.
-    assets_to_precompile =
-      Dir.chdir(root) do
-        Dir['app/assets/javascripts/**/*', 'app/assets/stylesheets/**/*'].map do |f|
-          f.split(File::SEPARATOR, 4).last
-        end
-      end
-    initializer 'foreman_expire_hosts.assets.precompile' do |app|
-      app.config.assets.precompile += assets_to_precompile
-    end
-    initializer 'foreman_expire_hosts.configure_assets', group: :assets do
-      SETTINGS[:foreman_expire_hosts] = { assets: { precompile: assets_to_precompile } }
-    end
   end
 end
