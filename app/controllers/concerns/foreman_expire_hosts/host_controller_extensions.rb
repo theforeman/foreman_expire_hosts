@@ -33,9 +33,9 @@ module ForemanExpireHosts
 
       if failed_hosts.empty?
         if expiration_date.present?
-          notice _('The expiration date of the selected hosts was set to %s.') % l(expiration_date)
+          success _('The expiration date of the selected hosts was set to %s.') % l(expiration_date)
         else
-          notice _('The expiration date of the selected hosts was cleared.')
+          success _('The expiration date of the selected hosts was cleared.')
         end
       else
         error n_('The expiration date could not be set for host: %s.',
