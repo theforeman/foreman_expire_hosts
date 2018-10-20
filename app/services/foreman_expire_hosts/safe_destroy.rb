@@ -9,11 +9,11 @@ module ForemanExpireHosts
 
     def destroy!
       # If Katello is installed, we can't just destroy the host
-      # but have to ask ForemanTasks to do this for us.
+      # but have to delete it the Katello way.
       # See https://community.theforeman.org/t/how-to-properly-destroy-a-content-host/8621
       # for reasoning.
-      if with_katello?
-        ForemanTasks.sync_task(::Actions::Katello::Host::Destroy, subject)
+      if subject.is_a?(Host::Base) && with_katello?
+        Katello::RegistrationManager.unregister_host(host)
       else
         subject.destroy!
       end
