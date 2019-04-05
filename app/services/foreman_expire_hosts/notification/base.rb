@@ -24,6 +24,8 @@ module ForemanExpireHosts
       end
 
       def deliver_mail_notification(recipient, hosts)
+        return true if hosts.empty?
+
         build_mail_notification(recipient, hosts).deliver_now
       rescue SocketError, Net::SMTPError => error
         message = _('Failed to deliver %{notification_name} for Hosts %{hosts}') % {
