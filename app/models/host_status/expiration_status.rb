@@ -15,6 +15,7 @@ module HostStatus
       return EXPIRED if host.expired_past_grace_period?
       return IN_GRACE_PERIOD if host.expired?
       return PENDING if host.pending_expiration?
+
       OK
     end
 

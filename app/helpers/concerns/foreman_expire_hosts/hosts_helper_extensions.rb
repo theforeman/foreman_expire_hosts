@@ -16,6 +16,7 @@ module ForemanExpireHosts
 
     def host_expiry_warning_message(host)
       return nil unless host.expires?
+
       if host.expired_past_grace_period?
         message = _('This host has expired %s ago and needs to be deleted manually.') % time_ago_in_words(host.expired_on)
       elsif host.expired?

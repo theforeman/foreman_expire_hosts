@@ -11,7 +11,7 @@ class Api::V2::HostsControllerTest < ActionController::TestCase
     get :show, params: { :id => host.to_param }
     assert_response :success
     show_response = ActiveSupport::JSON.decode(@response.body)
-    assert !show_response.empty?
+    assert_not_empty show_response
     assert_equal host.expired_on, show_response['expired_on'].to_date
   end
 end

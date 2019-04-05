@@ -59,11 +59,13 @@ module ForemanExpireHosts
         return global_recipients if global_recipients.present?
         return [User.anonymous_admin] if host.owner.blank?
         return [host.owner] if host.owner_type == 'User'
+
         host.owner.all_users
       end
 
       def additional_recipients
         return [] if Setting[:host_expiry_email_recipients].nil?
+
         Setting[:host_expiry_email_recipients].split(',').compact.map(&:strip)
       end
     end

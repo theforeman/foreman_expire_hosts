@@ -29,7 +29,7 @@ module ForemanExpireHosts
       test 'deletes a host' do
         assert Host::Managed.find_by(id: host.id)
         assert SafeDestroy.new(host).destroy!
-        refute Host::Managed.find_by(id: host.id)
+        assert_not Host::Managed.find_by(id: host.id)
       end
     end
   end
