@@ -10,6 +10,7 @@ module ExpireHostsNotifications
 
     def deliver_expiry_warning_notification(num = 1) # notify1_days_before_expiry
       return unless [1, 2].include?(num)
+
       days_before_expiry = Setting["notify#{num}_days_before_host_expiry"].to_i
       expiry_date        = (Date.today + days_before_expiry)
       notifiable_hosts   = Host.with_expire_date(expiry_date).preload(:owner)

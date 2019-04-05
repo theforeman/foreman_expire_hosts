@@ -6,6 +6,7 @@ module ForemanExpireHosts
 
         def create
           return add_notification unless find_notification
+
           redeliver! if redeliver?
           find_notification
         end

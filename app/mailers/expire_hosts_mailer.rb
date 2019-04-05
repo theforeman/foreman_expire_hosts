@@ -80,6 +80,7 @@ class ExpireHostsMailer < ApplicationMailer
   def recipient_mail(recipient)
     return recipient if recipient.is_a?(Array)
     return recipient.mail if recipient.mail.present?
+
     admin_email
   end
 

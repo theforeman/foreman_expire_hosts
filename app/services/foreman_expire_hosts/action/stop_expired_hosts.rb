@@ -9,6 +9,7 @@ module ForemanExpireHosts
 
       def action(host)
         return true unless host.supports_power_and_running?
+
         logger.info "Powering down expired host in grace period #{host}"
         host.power.stop
       rescue StandardError

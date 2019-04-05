@@ -40,27 +40,32 @@ module ForemanExpireHosts
 
     def expires_today?
       return false unless expires?
+
       expired_on.to_date == Date.today
     end
 
     def expired?
       return false unless expires?
+
       expired_on.to_date < Date.today
     end
 
     def expiration_grace_period_end_date
       return nil unless expires?
+
       expired_on + Setting[:days_to_delete_after_host_expiration].to_i
     end
 
     def expired_past_grace_period?
       return false unless expires?
+
       expiration_grace_period_end_date <= Date.today
     end
 
     def pending_expiration?
       return false unless expires?
       return false if expired?
+
       expired_on - Setting['notify1_days_before_host_expiry'].to_i <= Date.today
     end
 
@@ -70,6 +75,7 @@ module ForemanExpireHosts
       return true unless User.current
       return true if Authorizer.new(User.current).can?(:edit_host_expiry, self)
       return true if self.owner_type.nil? || self.owner.nil?
+
       Setting[:can_owner_modify_host_expiry_date] &&
         ((self.owner_type == 'User' && self.owner == User.current) ||
          (self.owner_type == 'Usergroup' && self.owner.all_users.include?(User.current)))

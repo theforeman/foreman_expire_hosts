@@ -1,6 +1,7 @@
 module ExpireHostsMailerHelper
   def relative_date(date, opts = {})
     return _('N/A') if date.blank?
+
     opts[:tense] ||= :future if Date.today < date
     opts[:tense] ||= :past if Date.today > date
 

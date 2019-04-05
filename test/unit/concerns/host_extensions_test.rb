@@ -26,7 +26,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
     test 'should require expired on' do
       host = FactoryBot.build(:host)
-      refute host.valid?, "Can not be valid without expiration date: #{host.errors.messages}"
+      assert_not host.valid?, "Can not be valid without expiration date: #{host.errors.messages}"
       assert_includes host.errors.messages.keys, :expired_on
     end
   end
@@ -99,23 +99,23 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not expire' do
-      refute @host.expires?
+      assert_not @host.expires?
     end
 
     test 'should not expire today' do
-      refute @host.expires_today?
+      assert_not @host.expires_today?
     end
 
     test 'should not be expired' do
-      refute @host.expired?
+      assert_not @host.expired?
     end
 
     test 'should not be expired past grace period' do
-      refute @host.expired_past_grace_period?
+      assert_not @host.expired_past_grace_period?
     end
 
     test 'should not be pending expiration' do
-      refute @host.pending_expiration?
+      assert_not @host.pending_expiration?
     end
 
     test 'should not be in any expiration scopes' do
@@ -133,7 +133,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not expire today' do
-      refute @host.expires_today?
+      assert_not @host.expires_today?
     end
 
     test 'should be expired' do
@@ -145,7 +145,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not be pending expiration' do
-      refute @host.pending_expiration?
+      assert_not @host.pending_expiration?
     end
 
     test 'should only exist in correct scopes' do
@@ -168,11 +168,11 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not be expired' do
-      refute @host.expired?
+      assert_not @host.expired?
     end
 
     test 'should not be expired past grace period' do
-      refute @host.expired_past_grace_period?
+      assert_not @host.expired_past_grace_period?
     end
 
     test 'should be pending expiration' do
@@ -195,19 +195,19 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not expire today' do
-      refute @host.expires_today?
+      assert_not @host.expires_today?
     end
 
     test 'should not be expired' do
-      refute @host.expired?
+      assert_not @host.expired?
     end
 
     test 'should not be expired past grace period' do
-      refute @host.expired_past_grace_period?
+      assert_not @host.expired_past_grace_period?
     end
 
     test 'should not be pending expiration' do
-      refute @host.pending_expiration?
+      assert_not @host.pending_expiration?
     end
 
     test 'should only exist in correct scopes' do
@@ -225,7 +225,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not expire today' do
-      refute @host.expires_today?
+      assert_not @host.expires_today?
     end
 
     test 'should be expired' do
@@ -233,11 +233,11 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should not be expired past grace period' do
-      refute @host.expired_past_grace_period?
+      assert_not @host.expired_past_grace_period?
     end
 
     test 'should not be pending expiration' do
-      refute @host.pending_expiration?
+      assert_not @host.pending_expiration?
     end
 
     test 'should only exist in correct scopes' do
@@ -250,7 +250,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
   def exists_only_in_scopes(host, valid_scopes)
     host.save(validate: false)
     (EXPIRATION_SCOPES - valid_scopes).each do |scope|
-      refute Host::Managed.send(scope).exists?(host.id), "Host should not exist in #{scope} scope"
+      assert_not Host::Managed.send(scope).exists?(host.id), "Host should not exist in #{scope} scope"
     end
     valid_scopes.each do |scope|
       assert Host::Managed.send(scope).exists?(host.id), "Host should exist in #{scope} scope"

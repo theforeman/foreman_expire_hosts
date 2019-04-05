@@ -23,6 +23,6 @@ class ExpirationStatusTest < ActiveSupport::TestCase
     assert @status.relevant?
 
     @host.expired_on = nil
-    refute @status.relevant?
+    assert_not @status.relevant?
   end
 end
