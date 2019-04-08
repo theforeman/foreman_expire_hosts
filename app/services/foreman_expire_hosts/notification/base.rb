@@ -28,6 +28,8 @@ module ForemanExpireHosts
       def deliver_mail_notification(recipient, hosts)
         return true if hosts.empty?
 
+        logger.info "Deliving mail notification '#{humanized_name}' for hosts #{hosts.to_sentence} to #{recipient}."
+
         build_mail_notification(recipient, hosts).deliver_now
       rescue SocketError, Net::SMTPError => e
         message = _('Failed to deliver %{notification_name} for Hosts %{hosts}') % {
@@ -39,11 +41,12 @@ module ForemanExpireHosts
 
       def deliver_ui_notifications
         all_hosts.each do |host|
+          logger.info "Deliving UI notification '#{humanized_name}' for host '#{host}'."
           build_ui_notification(host).deliver!
         end
       end
 
-      delegate :logger, :to => :Rails
+      delegate :logger, :to => :ForemanExpireHosts
 
       def humanized_name
         _('Notification')
