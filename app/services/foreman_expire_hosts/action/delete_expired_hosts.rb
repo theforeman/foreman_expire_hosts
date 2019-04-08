@@ -10,6 +10,7 @@ module ForemanExpireHosts
       end
 
       def action(host)
+        logger.info "Destroying expired host #{host}."
         SafeDestroy.new(host).destroy!
       end
 

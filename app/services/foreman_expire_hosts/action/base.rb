@@ -23,8 +23,10 @@ module ForemanExpireHosts
           next if result.nil?
 
           if result
+            logger.info "Action #{self.class.name} for host #{host.name} was successful."
             self.successful_hosts << host
           else
+            logger.info "Action #{self.class.name} for host #{host.name} failed."
             self.failed_hosts << host
           end
         end
@@ -56,7 +58,7 @@ module ForemanExpireHosts
         }
       end
 
-      delegate :logger, :to => :Rails
+      delegate :logger, :to => :ForemanExpireHosts
     end
   end
 end

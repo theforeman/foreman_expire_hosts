@@ -69,4 +69,8 @@ module ForemanExpireHosts
       end
     end
   end
+
+  def self.logger
+    Foreman::Logging.logger('foreman_expire_hosts')
+  end
 end

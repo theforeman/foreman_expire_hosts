@@ -13,7 +13,7 @@ module ForemanExpireHosts
         return false unless host.supports_power?
         return unless host.power.ready?
 
-        logger.info "Powering down expired host in grace period #{host}"
+        logger.info "Powering down expired host in grace period #{host}."
         host.power.stop
       rescue StandardError
         false
