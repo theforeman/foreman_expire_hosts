@@ -6,26 +6,26 @@ FactoryBot.modify do
     end
 
     trait :expires_in_a_year do
-      expired_on Date.today + 365
+      expired_on { Date.today + 365 }
     end
 
     trait :expires_in_a_week do
-      expired_on Date.today + 7
+      expired_on { Date.today + 7 }
     end
 
     trait :expires_today do
       without_validation
-      expired_on Date.today
+      expired_on { Date.today }
     end
 
     trait :expired_grace do
       without_validation
-      expired_on Date.today - 1
+      expired_on { Date.today - 1 }
     end
 
     trait :expired do
       without_validation
-      expired_on Date.today - 356
+      expired_on { Date.today - 356 }
     end
   end
 end
