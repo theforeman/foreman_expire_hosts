@@ -105,6 +105,12 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       end
     end
 
+    test 'should send no message if host is already be stopped' do
+      power_mock.stubs(:ready?).returns(false)
+      ExpireHostsNotifications.stop_expired_hosts
+      assert_equal 0, ActionMailer::Base.deliveries.count
+    end
+
     test 'should send failure message if host cannot be stopped' do
       power_mock.expects(:stop).returns(false)
       ExpireHostsNotifications.stop_expired_hosts

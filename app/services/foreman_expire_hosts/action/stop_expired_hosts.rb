@@ -8,7 +8,8 @@ module ForemanExpireHosts
       end
 
       def action(host)
-        return true unless host.supports_power_and_running?
+        return false unless host.supports_power?
+        return unless host.power.ready?
 
         logger.info "Powering down expired host in grace period #{host}"
         host.power.stop
