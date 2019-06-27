@@ -17,7 +17,10 @@ module ForemanExpireHosts
 
       def process
         hosts.each do |host|
-          if action(host)
+          result = action(host)
+          next if result.nil?
+
+          if result
             self.successful_hosts << host
           else
             self.failed_hosts << host
