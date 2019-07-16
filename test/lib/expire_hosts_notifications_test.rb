@@ -119,6 +119,23 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       assert_equal 1, ActionMailer::Base.deliveries.count
       assert_includes ActionMailer::Base.deliveries.first.subject, 'Failed to stop expired hosts'
     end
+
+    context 'with a host expiring today' do
+      let(:host) { FactoryBot.create(:host, :expires_today, :on_compute_resource, :owner => user) }
+      let(:delete_date) { Date.today + Setting[:days_to_delete_after_host_expiration].to_i }
+
+      it 'should stop the host and show the correct delete date' do
+        power_mock.expects(:stop).returns(true)
+        ExpireHostsNotifications.stop_expired_hosts
+        assert_equal 1, ActionMailer::Base.deliveries.count
+        assert_includes ActionMailer::Base.deliveries.first.subject, 'Stopped expired hosts'
+        assert_includes ActionMailer::Base.deliveries.first.body, "These hosts will be destroyed on #{delete_date}."
+
+        travel_to delete_date do
+          assert_includes Host.expired_past_grace_period, host
+        end
+      end
+    end
   end
 
   context '#deliver_expiry_warning_notification' do

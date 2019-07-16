@@ -15,7 +15,7 @@ module ForemanExpireHosts
 
       scope :expiring, -> { where('expired_on IS NOT NULL') }
       scope :with_expire_date, ->(date) { expiring.where('expired_on = ?', date) }
-      scope :expired, -> { expiring.where('expired_on < ?', Date.today) }
+      scope :expired, -> { expiring.where('expired_on <= ?', Date.today) }
       scope :expiring_today, -> { expiring.with_expire_date(Date.today) }
       scope :expired_past_grace_period, -> { expiring.where('expired_on <= ?', Date.today - Setting[:days_to_delete_after_host_expiration].to_i) }
 

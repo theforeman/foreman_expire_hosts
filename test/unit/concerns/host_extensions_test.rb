@@ -182,7 +182,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should only exist in correct scopes' do
-      exists_only_in_scopes(@host, ['expiring', 'expiring_today'])
+      exists_only_in_scopes(@host, ['expiring', 'expired', 'expiring_today'])
     end
   end
 
