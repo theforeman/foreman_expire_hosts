@@ -37,6 +37,10 @@ class ExpireHostMailerTest < ActionMailer::TestCase
       assert_includes mail.subject, 'Stopped expired hosts in Foreman'
     end
 
+    test 'should include a deletion date' do
+      assert_includes mail.body, "These hosts will be destroyed on #{Date.today}."
+    end
+
     test 'should show mitigation text if authorized' do
       ForemanExpireHosts::ExpiryEditAuthorizer.any_instance.stubs(:authorized?).returns(true)
       assert_includes mail.body.to_s, 'Please change their expiry date'
