@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanExpireHosts
   class SafeDestroy
     # See http://projects.theforeman.org/issues/14702 for reasoning.
@@ -17,14 +19,14 @@ module ForemanExpireHosts
       else
         subject.destroy!
       end
-    rescue ActiveRecord::RecordNotDestroyed => invalid
+    rescue ActiveRecord::RecordNotDestroyed => e
       message = _('Failed to delete %{class_name} %{subject}: %{message} - Errors: %{errors}') % {
         :class_name => subject.class.name,
         :subject => subject,
-        :message => invalid.message,
-        :errors => invalid.record.errors.full_messages.to_sentence
+        :message => e.message,
+        :errors => e.record.errors.full_messages.to_sentence
       }
-      Foreman::Logging.exception(message, invalid)
+      Foreman::Logging.exception(message, e)
       false
     end
 

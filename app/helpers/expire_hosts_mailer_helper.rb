@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExpireHostsMailerHelper
   def relative_date(date, opts = {})
     return _('N/A') if date.blank?

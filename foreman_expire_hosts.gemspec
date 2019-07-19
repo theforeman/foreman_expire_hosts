@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require File.expand_path('lib/foreman_expire_hosts/version', __dir__)
 require 'date'
 
@@ -22,5 +24,5 @@ Gem::Specification.new do |s|
   s.add_dependency 'deface'
 
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.59.2'
+  s.add_development_dependency 'rubocop', '0.71.0'
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Tasks
 namespace :expired_hosts do
   desc 'Delete all expired hosts, send notification email about expiring hosts'

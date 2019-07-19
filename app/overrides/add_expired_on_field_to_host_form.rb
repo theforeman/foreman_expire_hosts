@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Deface::Override.new(
   :virtual_path => 'hosts/_form',
   :name => 'host_form_expired_on_field',

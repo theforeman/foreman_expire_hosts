@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Deface::Override.new(
   :virtual_path => 'audits/_list',
   :name => 'deleted_expired_host_audit_comment_in_list',

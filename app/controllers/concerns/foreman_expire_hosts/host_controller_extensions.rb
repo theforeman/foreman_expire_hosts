@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanExpireHosts
   module HostControllerExtensions
     def self.prepended(base)
@@ -20,14 +22,14 @@ module ForemanExpireHosts
         begin
           host.expired_on = expiration_date
           host.save!
-        rescue StandardError => error
-          failed_hosts[host.name] = error
+        rescue StandardError => e
+          failed_hosts[host.name] = e
           message = if expiration_date.present?
                       _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }
                     else
                       _('Failed to clear expiration date for %s.') % host
                     end
-          Foreman::Logging.exception(message, error)
+          Foreman::Logging.exception(message, e)
         end
       end
 

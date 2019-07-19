@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Deface::Override.new(
   :virtual_path => 'hosts/_list',
   :name => 'host_list_expiration_js',
