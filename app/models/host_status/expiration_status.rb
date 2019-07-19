@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HostStatus
   class ExpirationStatus < HostStatus::Status
     OK = 0

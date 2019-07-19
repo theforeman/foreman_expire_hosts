@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanExpireHosts
   module Notification
     class DeletedHosts < Base

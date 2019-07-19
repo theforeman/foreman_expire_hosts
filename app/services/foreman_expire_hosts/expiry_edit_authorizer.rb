@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanExpireHosts
   class ExpiryEditAuthorizer
     attr_accessor :user, :hosts

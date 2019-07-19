@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ExpireHostsNotifications
   class << self
     def delete_expired_hosts

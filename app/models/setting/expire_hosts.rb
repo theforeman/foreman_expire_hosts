@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Setting::ExpireHosts < Setting
   Setting::BLANK_ATTRS.push('host_expiry_email_recipients')
 

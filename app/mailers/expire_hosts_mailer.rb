@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExpireHostsMailer < ApplicationMailer
   default :content_type => 'text/html', :from => Setting[:email_reply_address] || 'noreply@your-foreman.com'
 

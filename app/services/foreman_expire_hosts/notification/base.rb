@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ForemanExpireHosts
   module Notification
     class Base
@@ -27,12 +29,12 @@ module ForemanExpireHosts
         return true if hosts.empty?
 
         build_mail_notification(recipient, hosts).deliver_now
-      rescue SocketError, Net::SMTPError => error
+      rescue SocketError, Net::SMTPError => e
         message = _('Failed to deliver %{notification_name} for Hosts %{hosts}') % {
           :notification_name => humanized_name,
           :hosts => hosts.map(&:name).to_sentence
         }
-        Foreman::Logging.exception(message, error)
+        Foreman::Logging.exception(message, e)
       end
 
       def deliver_ui_notifications
