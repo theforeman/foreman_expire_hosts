@@ -36,10 +36,13 @@ module ForemanExpireHosts
           permission :edit_host_expiry,
                      {},
                      :resource_type => 'Host'
-          permission :edit_hosts,
-                     { :hosts => [:select_multiple_expiration, :update_multiple_expiration] },
-                     :resource_type => 'Host'
         end
+
+        # Extend built in permissions
+        Foreman::AccessControl.permission(:edit_hosts).actions.concat [
+          'hosts/select_multiple_expiration',
+          'hosts/update_multiple_expiration'
+        ]
 
         extend_rabl_template 'api/v2/hosts/main', 'api/v2/hosts/expiration'
       end
