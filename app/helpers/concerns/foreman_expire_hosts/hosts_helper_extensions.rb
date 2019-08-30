@@ -4,18 +4,6 @@ module ForemanExpireHosts
   module HostsHelperExtensions
     extend ActiveSupport::Concern
 
-    module Overrides
-      def multiple_actions
-        actions = super
-        actions << [_('Change Expiration'), select_multiple_expiration_hosts_path] if authorized_for(:controller => :hosts, :action => :select_multiple_expiration)
-        actions
-      end
-    end
-
-    included do
-      prepend Overrides
-    end
-
     def host_expiry_warning_message(host)
       return nil unless host.expires?
 

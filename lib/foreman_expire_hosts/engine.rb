@@ -25,7 +25,7 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        requires_foreman '>= 1.22'
+        requires_foreman '>= 1.24'
         register_custom_status HostStatus::ExpirationStatus
 
         # strong parameters
@@ -44,6 +44,10 @@ module ForemanExpireHosts
         ]
 
         extend_rabl_template 'api/v2/hosts/main', 'api/v2/hosts/expiration'
+
+        describe_host do
+          multiple_actions_provider :expire_hosts_host_multiple_actions
+        end
       end
     end
 
