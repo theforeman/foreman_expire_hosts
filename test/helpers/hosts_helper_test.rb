@@ -4,6 +4,9 @@ require 'test_plugin_helper'
 
 class HostsHelperTest < ActionView::TestCase
   include HostsHelper
+  include HostDescriptionHelper
+  include PuppetRelatedHelper
+  include ForemanExpireHosts::HostsHelper
   include ApplicationHelper
 
   describe '#multiple_actions' do
