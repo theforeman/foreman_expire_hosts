@@ -15,7 +15,7 @@ module ForemanExpireHosts
       # See https://community.theforeman.org/t/how-to-properly-destroy-a-content-host/8621
       # for reasoning.
       if subject.is_a?(Host::Base) && with_katello?
-        Katello::RegistrationManager.unregister_host(host)
+        Katello::RegistrationManager.unregister_host(subject)
       else
         subject.destroy!
       end
