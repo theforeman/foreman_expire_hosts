@@ -13,9 +13,8 @@ module ForemanExpireHosts
     def select_multiple_expiration; end
 
     def update_multiple_expiration
-      expiration_date = params[:host][:expired_on]
-      expiration_date = Date.parse(expiration_date) if expiration_date.present?
-
+      expiration_date_arr = params[:host].select { |k| k.start_with?('expired_on') }.values.map(&:to_i)
+      expiration_date = Date.new(*expiration_date_arr) unless expiration_date_arr.include?(0) || expiration_date_arr.length != 3
       failed_hosts = {}
 
       @hosts.each do |host|
@@ -50,16 +49,11 @@ module ForemanExpireHosts
     private
 
     def validate_multiple_expiration
-      if params[:host].nil? || (expiration_date = params[:host][:expired_on]).nil?
-        error _('No expiration date selected!')
-        redirect_to(select_multiple_expiration_hosts_path) && (return false)
-      end
-      begin
-        Date.parse(expiration_date) if expiration_date.present?
-      rescue ArgumentError
-        error _('Invalid expiration date!')
-        redirect_to(select_multiple_expiration_hosts_path) && (return false)
-      end
+      expiration_date_arr = params[:host].select { |k| k.start_with?('expired_on') }.values.map(&:to_i)
+      Date.new(*expiration_date_arr) unless expiration_date_arr.all?(&:zero?)
+    rescue ArgumentError
+      error _('Invalid expiration date!')
+      redirect_to(hosts_path) && (return false)
     end
 
     def action_permission
