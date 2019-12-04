@@ -169,7 +169,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
         ExpireHostsNotifications.deliver_expiry_warning_notification
         notification = Notification.find_by(notification_blueprint_id: blueprint.id, subject_id: hosts.first.id)
         assert_not_nil notification
-        assert_equal 1, NotificationRecipient.where(notification_id: notification.id).update_all(seen: true) # rubocop:disable Rails/SkipsModelValidations
+        assert_equal 1, NotificationRecipient.where(notification_id: notification.id).update_all(seen: true)
         ExpireHostsNotifications.deliver_expiry_warning_notification
         assert_equal 1, NotificationRecipient.where(notification_id: notification.id, seen: false).count
       end

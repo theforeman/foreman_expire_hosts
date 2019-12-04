@@ -1,6 +1,10 @@
 inherit_from:
   - .rubocop_todo.yml
 
+require:
+  - rubocop-performance
+  - rubocop-rails
+
 AllCops:
   TargetRubyVersion: 2.3
   TargetRailsVersion: 5.1
@@ -17,17 +21,11 @@ Rails/Date:
 Style/Documentation:
   Enabled: false
 
-Metrics/MethodLength:
-  Max: 40
-
 Naming/AccessorMethodName:
   Enabled: false
 
 Style/RedundantSelf:
   Enabled: false
-
-Metrics/ClassLength:
-  Max: 500
 
 Naming/FileName:
   Exclude:
@@ -46,9 +44,6 @@ Style/ClassAndModuleChildren:
   Enabled: false
 
 Style/EachWithObject:
-  Enabled: false
-
-Metrics/ParameterLists:
   Enabled: false
 
 Style/SymbolArray:
@@ -70,4 +65,13 @@ Style/CommentedKeyword:
   Enabled: false
 
 Rails/LexicallyScopedActionFilter:
+  Enabled: false
+
+Rails/OutputSafety:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+Metrics:
   Enabled: false
