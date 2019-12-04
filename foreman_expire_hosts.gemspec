@@ -24,5 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'deface'
 
   s.add_development_dependency 'rdoc'
-  s.add_development_dependency 'rubocop', '0.71.0'
+  s.add_development_dependency 'rubocop', '0.75.0'
+  s.add_development_dependency 'rubocop-performance'
+  s.add_development_dependency 'rubocop-rails', '~> 2.3.2'
 end

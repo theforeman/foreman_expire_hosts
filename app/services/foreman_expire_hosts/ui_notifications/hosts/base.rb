@@ -48,7 +48,7 @@ module ForemanExpireHosts
 
         def redeliver!
           recipients = find_notification.notification_recipients
-          recipients.update_all(seen: false) # rubocop:disable Rails/SkipsModelValidations
+          recipients.update_all(seen: false)
           recipients.pluck(:user_id).each do |user_id|
             ::UINotifications::CacheHandler.new(user_id).clear
           end
