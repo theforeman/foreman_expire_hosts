@@ -34,9 +34,6 @@ Naming/FileName:
 Style/WordArray:
   Enabled: false
 
-Style/BracesAroundHashParameters:
-  Enabled: false
-
 Style/RescueModifier:
   Enabled: false
 
@@ -74,4 +71,7 @@ Rails/SkipsModelValidations:
   Enabled: false
 
 Metrics:
+  Enabled: false
+
+Layout/LineLength:
   Enabled: false
