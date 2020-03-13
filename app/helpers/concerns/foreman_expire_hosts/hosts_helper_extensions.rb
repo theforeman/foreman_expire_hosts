@@ -23,12 +23,6 @@ module ForemanExpireHosts
       distance_of_time_in_words(to_time, Time.current, options)
     end
 
-    def input_group_addon(content, options = {})
-      content_tag :span, class: 'input-group-addon' do
-        content_tag :span, content, options
-      end
-    end
-
     def datepicker_f(form, attr, options = {}, html_options = {})
       field(form, attr, options) do
         addClass options, 'form-control'
