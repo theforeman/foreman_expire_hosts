@@ -53,10 +53,10 @@ module ForemanExpireHosts
 
     config.to_prepare do
       begin
-        Host::Managed.include ForemanExpireHosts::HostExt
-        HostsHelper.include ForemanExpireHosts::HostsHelperExtensions
-        HostsController.prepend ForemanExpireHosts::HostControllerExtensions
-        AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
+        ::Host::Managed.include ForemanExpireHosts::HostExt
+        ::HostsHelper.include ForemanExpireHosts::HostsHelperExtensions
+        ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
+        ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
         ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
       rescue StandardError => e
         Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
