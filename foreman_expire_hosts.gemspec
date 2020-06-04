@@ -10,10 +10,10 @@ Gem::Specification.new do |s|
   s.authors     = ['Nagarjuna Rachaneni', 'Timo Goebel']
   s.email       = ['nn.nagarjuna@gmail.com', 'mail@timogoebel.name']
   s.summary     = 'Foreman plugin for limiting host lifetime'
-  s.description = <<-DESC
-A Foreman plugin that allows hosts to expire at a configurable date.
-Hosts will be shut down and automatically deleted after a grace period.
-DESC
+  s.description = <<~DESC
+    A Foreman plugin that allows hosts to expire at a configurable date.
+    Hosts will be shut down and automatically deleted after a grace period.
+  DESC
   s.homepage    = 'https://github.com/theforeman/foreman_expire_hosts'
   s.licenses    = ['GPL-3.0']
 
