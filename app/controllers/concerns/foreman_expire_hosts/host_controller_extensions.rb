@@ -55,8 +55,13 @@ module ForemanExpireHosts
 
     def expiration_date
       @expiration_date ||= begin
-        expiration_date_arr = params[:host].select { |k| k.start_with?('expired_on') }.values.map(&:to_i)
-        Date.new(*expiration_date_arr.reverse) unless expiration_date_arr.all?(&:zero?)
+        year = params['host']['expired_on(1i)']
+        month = params['host']['expired_on(2i)']
+        day = params['host']['expired_on(3i)']
+
+        return if year.empty? && month.empty? && day.empty?
+
+        Date.parse("#{year}-#{month}-#{day}")
       end
     end
 
