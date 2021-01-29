@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   s.homepage    = 'https://github.com/theforeman/foreman_expire_hosts'
   s.licenses    = ['GPL-3.0']
 
-  s.files       = Dir['{app,config,db,extra,lib,locale}/**/*'] + ['LICENSE', 'Rakefile', 'README.md']
+  s.files       = Dir['{app,config,db,extra,lib,locale}/**/*'] + ['LICENSE', 'README.md']
   s.test_files  = Dir['test/**/*']
 
   s.require_paths = ['lib']
