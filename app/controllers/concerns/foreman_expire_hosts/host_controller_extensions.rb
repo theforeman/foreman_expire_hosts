@@ -16,18 +16,16 @@ module ForemanExpireHosts
       failed_hosts = {}
 
       @hosts.each do |host|
-        begin
-          host.expired_on = expiration_date
-          host.save!
-        rescue StandardError => e
-          failed_hosts[host.name] = e
-          message = if expiration_date.present?
-                      _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }
-                    else
-                      _('Failed to clear expiration date for %s.') % host
-                    end
-          Foreman::Logging.exception(message, e)
-        end
+        host.expired_on = expiration_date
+        host.save!
+      rescue StandardError => e
+        failed_hosts[host.name] = e
+        message = if expiration_date.present?
+                    _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }
+                  else
+                    _('Failed to clear expiration date for %s.') % host
+                  end
+        Foreman::Logging.exception(message, e)
       end
 
       if failed_hosts.empty?
@@ -55,13 +53,8 @@ module ForemanExpireHosts
 
     def expiration_date
       @expiration_date ||= begin
-        year = params['host']['expired_on(1i)']
-        month = params['host']['expired_on(2i)']
-        day = params['host']['expired_on(3i)']
-
-        return if year.empty? && month.empty? && day.empty?
-
-        Date.parse("#{year}-#{month}-#{day}")
+        expired_on = params[:host][:expired_on]
+        expired_on.present? ? Date.parse(expired_on) : nil
       end
     end
 

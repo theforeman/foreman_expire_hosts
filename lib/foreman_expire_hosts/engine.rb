@@ -25,7 +25,7 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        requires_foreman '>= 1.24'
+        requires_foreman '>= 2.1'
         register_custom_status HostStatus::ExpirationStatus
 
         # strong parameters
@@ -52,15 +52,13 @@ module ForemanExpireHosts
     end
 
     config.to_prepare do
-      begin
-        ::Host::Managed.include ForemanExpireHosts::HostExt
-        ::HostsHelper.include ForemanExpireHosts::HostsHelperExtensions
-        ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
-        ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
-        ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
-      rescue StandardError => e
-        Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
-      end
+      ::Host::Managed.include ForemanExpireHosts::HostExt
+      ::HostsHelper.include ForemanExpireHosts::HostsHelperExtensions
+      ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
+      ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
+      ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
+    rescue StandardError => e
+      Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
     end
 
     rake_tasks do

@@ -70,7 +70,7 @@ class HostsControllerTest < ActionController::TestCase
     test 'should set expiration date' do
       expiration_date = Date.today + 14
       params = { :host_ids => @hosts.map(&:id),
-                 :host => { 'expired_on(1i)' => expiration_date.day.to_s, 'expired_on(2i)' => expiration_date.month.to_s, 'expired_on(3i)' => expiration_date.year.to_s } }
+                 :host => { 'expired_on' => expiration_date.strftime('%Y-%m-%d') } }
 
       post :update_multiple_expiration, params: params, session: set_session_user.merge(:user => users(:admin).id)
 

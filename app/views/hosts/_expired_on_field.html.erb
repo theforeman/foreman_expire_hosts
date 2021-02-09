@@ -1,13 +1,11 @@
-<%= datepicker_f f, :expired_on,
-           {
-             :label => _('Expires on'),
-             :autocomplete => false,
-             :include_blank => true,
-             :use_month_numbers => false,
-             :start_year => Date.today.year,
-             :help_block => ('<span class="pficon-warning-triangle-o"></span> '.html_safe + _('You are not allowed to change the expiry date of this host.') unless @host.can_modify_expiry_date?),
-             :disabled => !@host.can_modify_expiry_date?,
-             :help_inline  => popover('Auto Expiry', _('Expired hosts will be deleted automatically after the grace period has passed.') + '<br>'.html_safe +
-                                      _('If you do not want this host to expire and do not want it to be deleted automatically, do not specify an expiry date.'))
-           }
-%>
+<div class="form-group">
+  <label class="col-md-2 control-label"><%= _('Expires on') %></label>
+  <% if @host.can_modify_expiry_date? %>
+    <div id='expired-on-datepicker' class="col-md-4"></div>
+    <%= mount_react_component('DatePicker', '#expired-on-datepicker', { value: @host.expired_on, name: 'host[expired_on]', placement: 'bottom', hiddenValue: @host.expired_on.nil? }.to_json, flatten_data: true) %>
+    <%= content_tag(:span, _('Expired hosts will be deleted automatically after the grace period has passed. If you do not want this host to expire and do not want it to be deleted automatically, do not specify an expiry date.'), class: 'help-block help-inline') %>
+  <% else %>
+    <%= content_tag(:span, @host.expired_on&.to_s(:long), class: 'col-md-4') %>
+    <%= content_tag(:span, _('You are not allowed to change the expiry date of this host.'), class: 'help-block help-inline') %>
+  <% end %>
+</div>

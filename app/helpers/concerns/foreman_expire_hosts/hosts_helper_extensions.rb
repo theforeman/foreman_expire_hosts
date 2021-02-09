@@ -22,12 +22,5 @@ module ForemanExpireHosts
     def future_time_in_words(to_time, options = {})
       distance_of_time_in_words(to_time, Time.current, options)
     end
-
-    def datepicker_f(form, attr, options = {}, html_options = {})
-      field(form, attr, options) do
-        addClass options, 'form-control'
-        form.date_select(attr, options, html_options)
-      end
-    end
   end
 end
