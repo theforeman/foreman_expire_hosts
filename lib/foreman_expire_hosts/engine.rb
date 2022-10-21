@@ -19,13 +19,9 @@ module ForemanExpireHosts
       end
     end
 
-    initializer 'foreman_expire_hosts.load_default_settings', :before => :load_config_initializers do
-      require_dependency File.expand_path('../../app/models/setting/expire_hosts.rb', __dir__) if (Setting.table_exists? rescue(false))
-    end
-
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_expire_hosts do
-        requires_foreman '>= 1.24'
+        requires_foreman '>= 3.0.0'
         register_custom_status HostStatus::ExpirationStatus
 
         # strong parameters
@@ -42,6 +38,41 @@ module ForemanExpireHosts
           'hosts/select_multiple_expiration',
           'hosts/update_multiple_expiration'
         ]
+
+        settings do
+          category(:expire_hosts, N_('Expire Hosts')) do
+            setting('is_host_expiry_date_mandatory',
+                    type: :boolean,
+                    description: N_('Make expiry date field mandatory on host creation/update'),
+                    default: false,
+                    full_name: N_('Require host expiry date'))
+            setting('can_owner_modify_host_expiry_date',
+                    type: :boolean,
+                    description: N_('Allow host owner to modify host expiry date field. If the field is false then admin only can edit expiry field'),
+                    default: false,
+                    full_name: N_('Host owner can modify host expiry date'))
+            setting('notify1_days_before_host_expiry',
+                    type: :integer,
+                    description: N_('Send first notification to owner of hosts about his hosts expiring in given days. Must be integer only'),
+                    default: 7,
+                    full_name: N_('First expiry notification'))
+            setting('notify2_days_before_host_expiry',
+                    type: :integer,
+                    description: N_('Send second notification to owner of hosts about his hosts expiring in given days. Must be integer only'),
+                    default: 1,
+                    full_name: N_('Second expiry notification'))
+            setting('days_to_delete_after_host_expiration',
+                    type: :integer,
+                    description: N_('Delete expired hosts after given days of hosts expiry date. Must be integer only'),
+                    default: 3,
+                    full_name: N_('Expiry grace period in days'))
+            setting('host_expiry_email_recipients',
+                    type: :string,
+                    description: N_('All notifications will be delivered to its owner. If any other users/admins need to receive those expiry warning notifications then those emails can be configured comma separated here.'),
+                    default: nil,
+                    full_name: N_('Expiry e-mail recipients'))
+          end
+        end
 
         extend_rabl_template 'api/v2/hosts/main', 'api/v2/hosts/expiration'
 
