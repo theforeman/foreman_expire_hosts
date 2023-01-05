@@ -20,13 +20,11 @@ class HostsControllerTest < ActionController::TestCase
           :domain_id => domains(:mydomain).id,
           :operatingsystem_id => operatingsystems(:redhat).id,
           :architecture_id => architectures(:x86_64).id,
-          :environment_id => environments(:production).id,
           :subnet_id => subnets(:one).id,
           :medium_id => media(:one).id,
           :pxe_loader => 'Grub2 UEFI',
           :realm_id => realms(:myrealm).id,
           :disk => 'empty partition',
-          :puppet_proxy_id => smart_proxies(:puppetmaster).id,
           :root_pass => 'xybxa6JUkz63w',
           :location_id => taxonomies(:location1).id,
           :organization_id => taxonomies(:organization1).id,
@@ -53,7 +51,7 @@ class HostsControllerTest < ActionController::TestCase
   describe 'setting expiration date on multiple hosts' do
     before do
       as_admin do
-        @hosts = FactoryBot.create_list(:host, 2, :with_puppet)
+        @hosts = FactoryBot.create_list(:host, 2)
       end
       @request.env['HTTP_REFERER'] = hosts_path
     end

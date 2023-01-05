@@ -8,9 +8,6 @@
         <%= _('Host group') %>
       </th>
       <th>
-        <%= _('Environment') %>
-      </th>
-      <th>
         <%= _('Expiration Date') %>
       </th>
     </tr>
@@ -27,9 +24,6 @@
         </td>
         <td class="hosts-rows">
           <%= host.hostgroup %>
-        </td>
-        <td class="hosts-rows">
-          <%= host.environment %>
         </td>
         <td class="hosts-rows">
           <%= "#{l(host.expired_on)} (#{relative_date(host.expired_on)})" if host.expires? %>
