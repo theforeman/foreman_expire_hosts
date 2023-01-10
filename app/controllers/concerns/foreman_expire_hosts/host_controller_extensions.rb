@@ -55,13 +55,8 @@ module ForemanExpireHosts
 
     def expiration_date
       @expiration_date ||= begin
-        year = params['host']['expired_on(1i)']
-        month = params['host']['expired_on(2i)']
-        day = params['host']['expired_on(3i)']
-
-        return if year.empty? && month.empty? && day.empty?
-
-        Date.parse("#{year}-#{month}-#{day}")
+        expired_on = params[:host][:expired_on]
+        expired_on.present? ? Date.parse(expired_on) : nil
       end
     end
 

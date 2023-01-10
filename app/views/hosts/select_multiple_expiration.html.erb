@@ -1,18 +1,9 @@
 <%= render 'selected_hosts', :hosts => @hosts %>
 
-<%= form_for :host, :url => update_multiple_expiration_hosts_path(:host_ids => params[:host_ids]) do |f| %>
-
-<%= _('Hosts will be deleted automatically on the given expiry date. Leave blank to clear expiration date.') %>
-
-<%= datepicker_f f, :expired_on,
-  {
-    :autocomplete => false,
-    :include_blank => true,
-    :use_month_numbers => false,
-    :start_year => Date.today.year
-  },
-  {
-    :onchange => 'tfm.hosts.table.toggleMultipleOkButton(this);'
-  }
-%>
+<%= form_for :host, html: { style: 'padding-bottom: 250px;' }, :url => update_multiple_expiration_hosts_path(:host_ids => params[:host_ids]) do |f| %>
+  <%= date_local_f f, :expired_on,
+    label: _('Expired on'),
+    label_help: _('Hosts will be deleted automatically on the given expiry date. Leave blank to clear expiration date.'),
+    placement: 'bottom'
+  %>
 <% end %>
