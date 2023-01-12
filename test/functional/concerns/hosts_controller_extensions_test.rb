@@ -4,9 +4,9 @@ require 'test_plugin_helper'
 
 class HostsControllerTest < ActionController::TestCase
   setup do
+    Setting['host_details_ui'] = false if Setting['host_details_ui']
     User.current = users(:admin)
     disable_orchestration
-    setup_settings
   end
 
   describe 'host creation' do

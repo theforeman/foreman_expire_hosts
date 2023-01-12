@@ -30,7 +30,6 @@ module ForemanExpireHosts
 
       context 'with edit_hosts and owner permission' do
         setup do
-          setup_settings
           FactoryBot.create(:filter, :role => role, :permissions => [edit_permission])
         end
         let(:hosts) { FactoryBot.create_list(:host, 2, :owner => user) }

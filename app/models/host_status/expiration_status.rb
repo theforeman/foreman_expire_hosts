@@ -41,15 +41,15 @@ module HostStatus
     def to_label(_options = {})
       case to_status
       when OK
-        N_('Expires on %s') % I18n.l(host.expired_on)
+        N_('Expires on %s') % I18n.l(host.expired_on.to_date)
       when EXPIRES_TODAY
         N_('Expires today')
       when IN_GRACE_PERIOD
-        N_('Expired on %s, in grace period') % I18n.l(host.expired_on)
+        N_('Expired on %s, in grace period') % I18n.l(host.expired_on.to_date)
       when EXPIRED
-        N_('Expired on %s') % I18n.l(host.expired_on)
+        N_('Expired on %s') % I18n.l(host.expired_on.to_date)
       else
-        N_('Pending expiration on %s') % I18n.l(host.expired_on)
+        N_('Pending expiration on %s') % I18n.l(host.expired_on.to_date)
       end
     end
 

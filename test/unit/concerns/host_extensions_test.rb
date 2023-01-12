@@ -7,7 +7,6 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
   setup do
     User.current = FactoryBot.build(:user, :admin)
-    setup_settings
   end
 
   context 'without required expiration date' do

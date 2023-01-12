@@ -1,78 +1,13 @@
-inherit_from:
-  - .rubocop_todo.yml
+inherit_gem:
+  theforeman-rubocop:
+    - strictest.yml
 
-require:
-  - rubocop-minitest
-  - rubocop-performance
-  - rubocop-rails
+inherit_from: .rubocop_todo.yml
 
-AllCops:
-  TargetRubyVersion: 2.3
-  TargetRailsVersion: 5.1
+inherit_mode:
+  merge:
+    - Exclude
+
+Metrics/BlockLength:
   Exclude:
-    - 'Rakefile'
-
-Rails:
-  Enabled: true
-
-Rails/Date:
-  Enabled: false
-
-# Don't enforce documentation
-Style/Documentation:
-  Enabled: false
-
-Naming/AccessorMethodName:
-  Enabled: false
-
-Style/RedundantSelf:
-  Enabled: false
-
-Naming/FileName:
-  Exclude:
-      - 'db/seeds.d/*'
-
-Style/WordArray:
-  Enabled: false
-
-Style/RescueModifier:
-  Enabled: false
-
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-Style/EachWithObject:
-  Enabled: false
-
-Style/SymbolArray:
-  Enabled: false
-
-Style/FormatString:
-  Enabled: false
-
-Style/FormatStringToken:
-  Enabled: false
-
-Style/HashSyntax:
-  Enabled: false
-
-Rails/HasManyOrHasOneDependent:
-  Enabled: false
-
-Style/CommentedKeyword:
-  Enabled: false
-
-Rails/LexicallyScopedActionFilter:
-  Enabled: false
-
-Rails/OutputSafety:
-  Enabled: false
-
-Rails/SkipsModelValidations:
-  Enabled: false
-
-Metrics:
-  Enabled: false
-
-Layout/LineLength:
-  Enabled: false
+    - 'lib/foreman_expire_hosts/engine.rb'

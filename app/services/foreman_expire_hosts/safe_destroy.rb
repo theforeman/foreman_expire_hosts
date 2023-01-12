@@ -33,7 +33,7 @@ module ForemanExpireHosts
     private
 
     def with_katello?
-      Katello # rubocop:disable Lint/Void
+      Katello::VERSION # rubocop:disable Lint/Void
       true
     rescue StandardError
       false

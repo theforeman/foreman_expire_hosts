@@ -3,10 +3,6 @@
 require 'test_plugin_helper'
 
 class ExpireHostMailerTest < ActionMailer::TestCase
-  setup do
-    setup_settings
-  end
-
   let(:recipient) { FactoryBot.create(:user, :with_mail) }
   let(:hosts) { FactoryBot.create_list(:host, 2, :managed) }
 
@@ -84,7 +80,7 @@ class ExpireHostMailerTest < ActionMailer::TestCase
 
     test 'mail is delivered to admin address' do
       assert_nil recipient.mail
-      assert_equal ['root@some.host.fqdn'], mail.to
+      assert_equal [Setting[:administrator]], mail.to
     end
   end
 end
