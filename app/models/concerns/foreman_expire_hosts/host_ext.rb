@@ -55,7 +55,7 @@ module ForemanExpireHosts
     def expiration_grace_period_end_date
       return nil unless expires?
 
-      expired_on + Setting[:days_to_delete_after_host_expiration].to_i
+      expired_on.to_date + Setting[:days_to_delete_after_host_expiration].to_i
     end
 
     def expired_past_grace_period?

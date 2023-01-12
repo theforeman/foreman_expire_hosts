@@ -39,6 +39,8 @@ module ForemanExpireHosts
           'hosts/update_multiple_expiration'
         ]
 
+        Setting::BLANK_ATTRS << 'host_expiry_email_recipients'
+
         settings do
           category(:expire_hosts, N_('Expire Hosts')) do
             setting('is_host_expiry_date_mandatory',

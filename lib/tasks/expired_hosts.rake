@@ -25,24 +25,9 @@ namespace :test do
   end
 end
 
-namespace :foreman_expire_hosts do
-  task :rubocop => :environment do
-    begin
-      require 'rubocop/rake_task'
-      RuboCop::RakeTask.new(:rubocop_foreman_expire_hosts) do |task|
-        task.patterns = ["#{ForemanExpireHosts::Engine.root}/app/**/*.rb",
-                         "#{ForemanExpireHosts::Engine.root}/lib/**/*.rb",
-                         "#{ForemanExpireHosts::Engine.root}/test/**/*.rb"]
-      end
-    rescue StandardError
-      puts 'Rubocop not loaded.'
-    end
-
-    Rake::Task['rubocop_foreman_expire_hosts'].invoke
-  end
-end
-
 Rake::Task[:test].enhance ['test:foreman_expire_hosts']
 
 load 'tasks/jenkins.rake'
-Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts', 'foreman_expire_hosts:rubocop'] if Rake::Task.task_defined?(:'jenkins:unit')
+if Rake::Task.task_defined?(:'jenkins:unit')
+  Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts']
+end

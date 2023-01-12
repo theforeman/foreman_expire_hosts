@@ -16,10 +16,6 @@ require File.join(
 # Foreman's setup doesn't handle cleaning up for Minitest::Spec
 DatabaseCleaner.strategy = :transaction
 
-def setup_settings
-  Setting::ExpireHosts.load_defaults
-end
-
 class Minitest::Spec
   before :each do
     DatabaseCleaner.start

@@ -7,7 +7,6 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
   include NotificationBlueprintSeeds
 
   setup do
-    setup_settings
     ActionMailer::Base.deliveries.clear
   end
 
