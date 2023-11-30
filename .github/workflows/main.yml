@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - 'master'
+      - '*-stable'
+
+concurrency:
+  group: ${{ github.ref_name }}-${{ github.workflow }}
+  cancel-in-progress: true
+
+jobs:
+  rubocop:
+    name: Rubocop
+    uses: theforeman/actions/.github/workflows/rubocop.yml@v0
+
+  test:
+    name: Foreman
+    needs: rubocop
+    strategy:
+      fail-fast: false
+      matrix:
+        foreman:
+          - 'develop'
+          - '3.9-stable'
+          - '3.8-stable'
+    uses: theforeman/actions/.github/workflows/foreman_plugin.yml@install-npm
+    with:
+      plugin: foreman_expire_hosts
+      foreman_version: ${{ matrix.foreman }}
