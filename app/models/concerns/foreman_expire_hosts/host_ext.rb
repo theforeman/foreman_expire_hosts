@@ -55,20 +55,20 @@ module ForemanExpireHosts
     def expiration_grace_period_end_date
       return nil unless expires?
 
-      expired_on.to_date + Setting[:days_to_delete_after_host_expiration].to_i
+      expired_on.to_date + Setting[:days_to_delete_after_host_expiration].to_i.days
     end
 
     def expired_past_grace_period?
       return false unless expires?
 
-      expiration_grace_period_end_date <= Date.today
+      expiration_grace_period_end_date.to_date <= Date.today
     end
 
     def pending_expiration?
       return false unless expires?
       return false if expired?
 
-      expired_on - Setting['notify1_days_before_host_expiry'].to_i <= Date.today
+      expired_on.to_date - Setting['notify1_days_before_host_expiry'].to_i.days <= Date.today
     end
 
     def can_modify_expiry_date?
