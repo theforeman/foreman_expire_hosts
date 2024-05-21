@@ -87,7 +87,6 @@ module ForemanExpireHosts
     config.to_prepare do
       begin
         ::Host::Managed.include ForemanExpireHosts::HostExt
-        ::HostsHelper.include ForemanExpireHosts::HostsHelperExtensions
         ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
         ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
         ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
