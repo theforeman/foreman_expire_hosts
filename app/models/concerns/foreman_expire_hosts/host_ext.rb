@@ -7,9 +7,10 @@ module ForemanExpireHosts
     included do
       after_validation :validate_expired_on
 
-      validates :expired_on, :presence => true, :if => -> { Setting[:is_host_expiry_date_mandatory] }
+      validates :expired_on, presence: true, if: -> { Setting[:is_host_expiry_date_mandatory] }
 
-      has_one :expiration_status_object, :class_name => 'HostStatus::ExpirationStatus', :foreign_key => 'host_id', :inverse_of => :host
+      has_one :expiration_status_object, class_name: 'HostStatus::ExpirationStatus', foreign_key: 'host_id',
+                                         inverse_of: :host
 
       before_validation :refresh_expiration_status
 
@@ -17,22 +18,22 @@ module ForemanExpireHosts
       scope :with_expire_date, ->(date) { expiring.where('expired_on = ?', date) }
       scope :expired, -> { expiring.where('expired_on <= ?', Date.today) }
       scope :expiring_today, -> { expiring.with_expire_date(Date.today) }
-      scope :expired_past_grace_period, -> { expiring.where('expired_on <= ?', Date.today - Setting[:days_to_delete_after_host_expiration].to_i) }
+      scope :expired_past_grace_period, lambda {
+                                          expiring.where('expired_on <= ?', Date.today - Setting[:days_to_delete_after_host_expiration].to_i)
+                                        }
 
-      scoped_search :on => :expired_on, :complete_value => true, :rename => :expires, :only_explicit => true
+      scoped_search on: :expired_on, complete_value: true, rename: :expires, only_explicit: true
     end
 
     def validate_expired_on
-      if self.expires?
+      if expires?
         begin
           errors.add(:expired_on, _('must be in the future')) unless expired_on.to_s.to_date > Date.today
         rescue StandardError
           errors.add(:expired_on, _('is invalid'))
         end
       end
-      if self.changed.include?('expired_on')
-        errors.add(:expired_on, _('no permission to edit')) unless can_modify_expiry_date?
-      end
+      errors.add(:expired_on, _('no permission to edit')) if changed.include?('expired_on') && !can_modify_expiry_date?
       true
     end
 
@@ -76,17 +77,17 @@ module ForemanExpireHosts
       return true if defined?(Rails::Console)
       return true unless User.current
       return true if Authorizer.new(User.current).can?(:edit_host_expiry, self)
-      return true if self.owner_type.nil? || self.owner.nil?
+      return true if owner_type.nil? || owner.nil?
 
       Setting[:can_owner_modify_host_expiry_date] &&
-        ((self.owner_type == 'User' && self.owner == User.current) ||
-         (self.owner_type == 'Usergroup' && self.owner.all_users.include?(User.current)))
+        ((owner_type == 'User' && owner == User.current) ||
+         (owner_type == 'Usergroup' && owner.all_users.include?(User.current)))
     end
 
     private
 
     def refresh_expiration_status
-      self.get_status(HostStatus::ExpirationStatus).refresh
+      get_status(HostStatus::ExpirationStatus).refresh
     end
   end
 end

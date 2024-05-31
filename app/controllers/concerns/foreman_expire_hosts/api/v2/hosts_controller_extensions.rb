@@ -8,7 +8,7 @@ module ForemanExpireHosts
 
         update_api(:create, :update) do
           param :host, Hash do
-            param :expired_on, String, :desc => 'Expiry date'
+            param :expired_on, String, desc: 'Expiry date'
           end
         end
       end

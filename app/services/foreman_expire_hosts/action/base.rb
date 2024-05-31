@@ -24,10 +24,10 @@ module ForemanExpireHosts
 
           if result
             logger.info "Action #{self.class.name} for host #{host.name} was successful."
-            self.successful_hosts << host
+            successful_hosts << host
           else
             logger.info "Action #{self.class.name} for host #{host.name} failed."
-            self.failed_hosts << host
+            failed_hosts << host
           end
         end
       end
@@ -47,18 +47,18 @@ module ForemanExpireHosts
 
       def success_notification_options
         {
-          :hosts => successful_hosts
+          hosts: successful_hosts
         }
       end
 
       def failure_notification_options
         {
-          :hosts => failed_hosts,
-          :to => User.anonymous_admin
+          hosts: failed_hosts,
+          to: User.anonymous_admin
         }
       end
 
-      delegate :logger, :to => :ForemanExpireHosts
+      delegate :logger, to: :ForemanExpireHosts
     end
   end
 end

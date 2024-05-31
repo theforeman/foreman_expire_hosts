@@ -22,7 +22,7 @@ module ForemanExpireHosts
         end
 
         def message_variables
-          super.merge(:relative_expiry_time => time_ago_in_words(subject.expired_on))
+          super.merge(relative_expiry_time: time_ago_in_words(subject.expired_on))
         end
       end
     end

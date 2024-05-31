@@ -19,7 +19,7 @@ module ForemanExpireHosts
 
     describe 'model with failing callbacks' do
       test 'return false on record delete' do
-        h = HostWithFailingCallbacks.create!(:name => 'test')
+        h = HostWithFailingCallbacks.create!(name: 'test')
         assert_equal false, SafeDestroy.new(h).destroy!
         assert_equal 1, HostWithFailingCallbacks.all.count
       end

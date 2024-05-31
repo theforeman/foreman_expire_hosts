@@ -18,8 +18,8 @@ module ExpireHostsNotifications
       notifiable_hosts   = Host.with_expire_date(expiry_date).preload(:owner)
 
       ForemanExpireHosts::Notification::ExpiryWarning.new(
-        :hosts => notifiable_hosts,
-        :expiry_date => expiry_date
+        hosts: notifiable_hosts,
+        expiry_date: expiry_date
       ).deliver
     end
   end

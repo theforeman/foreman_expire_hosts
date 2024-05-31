@@ -3,7 +3,7 @@
 require 'test_plugin_helper'
 
 class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
-  EXPIRATION_SCOPES = ['expiring', 'expired', 'expiring_today', 'expired_past_grace_period'].freeze
+  EXPIRATION_SCOPES = %w[expiring expired expiring_today expired_past_grace_period].freeze
 
   setup do
     User.current = FactoryBot.build(:user, :admin)
@@ -35,7 +35,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
   context 'changing expiration date for user owned host' do
     setup do
       @user = FactoryBot.create(:user)
-      @host = FactoryBot.create(:host, :expired, :owner => @user)
+      @host = FactoryBot.create(:host, :expired, owner: @user)
     end
 
     test 'admin should be able to change expiration date' do
@@ -72,9 +72,11 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
 
     context 'with edit_host_expiry permission' do
       let(:permission) { Permission.find_by(name: 'edit_host_expiry') }
-      let(:filter) { FactoryBot.create(:filter, :permissions => [permission]) }
-      let(:role) { FactoryBot.create(:role, :filters => [filter]) }
-      let(:user) { FactoryBot.create(:user, :organizations => [host.organization], :locations => [host.location], :roles => [role]) }
+      let(:filter) { FactoryBot.create(:filter, permissions: [permission]) }
+      let(:role) { FactoryBot.create(:role, filters: [filter]) }
+      let(:user) do
+        FactoryBot.create(:user, organizations: [host.organization], locations: [host.location], roles: [role])
+      end
 
       test 'user can change expiry date' do
         as_user user do
@@ -84,7 +86,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     context 'without edit_host_expiry permission' do
-      let(:user) { FactoryBot.build(:user, :organizations => [host.organization], :locations => [host.location]) }
+      let(:user) { FactoryBot.build(:user, organizations: [host.organization], locations: [host.location]) }
 
       test 'user can not change expiry date' do
         as_user user do
@@ -150,7 +152,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should only exist in correct scopes' do
-      exists_only_in_scopes(@host, ['expiring', 'expired', 'expired_past_grace_period'])
+      exists_only_in_scopes(@host, %w[expiring expired expired_past_grace_period])
     end
   end
 
@@ -181,7 +183,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should only exist in correct scopes' do
-      exists_only_in_scopes(@host, ['expiring', 'expired', 'expiring_today'])
+      exists_only_in_scopes(@host, %w[expiring expired expiring_today])
     end
   end
 
@@ -242,7 +244,7 @@ class ForemanExpireHostsHostExtTest < ActiveSupport::TestCase
     end
 
     test 'should only exist in correct scopes' do
-      exists_only_in_scopes(@host, ['expiring', 'expired'])
+      exists_only_in_scopes(@host, %w[expiring expired])
     end
   end
 

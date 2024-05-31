@@ -32,10 +32,8 @@ module ForemanExpireHosts
 
         build_mail_notification(recipient, hosts).deliver_now
       rescue SocketError, Net::SMTPError => e
-        message = _('Failed to deliver %{notification_name} for Hosts %{hosts}') % {
-          :notification_name => humanized_name,
-          :hosts => hosts.map(&:name).to_sentence
-        }
+        message = format(_('Failed to deliver %{notification_name} for Hosts %{hosts}'),
+                         notification_name: humanized_name, hosts: hosts.map(&:name).to_sentence)
         Foreman::Logging.exception(message, e)
       end
 
@@ -46,7 +44,7 @@ module ForemanExpireHosts
         end
       end
 
-      delegate :logger, :to => :ForemanExpireHosts
+      delegate :logger, to: :ForemanExpireHosts
 
       def humanized_name
         _('Notification')

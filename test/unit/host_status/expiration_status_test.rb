@@ -5,7 +5,7 @@ require 'test_plugin_helper'
 class ExpirationStatusTest < ActiveSupport::TestCase
   def setup
     @host = FactoryBot.build(:host)
-    @status = HostStatus::ExpirationStatus.new(:host => @host)
+    @status = HostStatus::ExpirationStatus.new(host: @host)
   end
 
   test 'is valid' do

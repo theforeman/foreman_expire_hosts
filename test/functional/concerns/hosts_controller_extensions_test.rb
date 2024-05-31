@@ -13,22 +13,22 @@ class HostsControllerTest < ActionController::TestCase
     test 'new host with expiration date' do
       expiration_date = Date.today + 14
       assert_difference 'Host.count' do
-        post :create, params: { :host => {
-          :name => 'myotherfullhost',
-          :mac => 'aabbecddee06',
-          :ip => '2.3.4.125',
-          :domain_id => domains(:mydomain).id,
-          :operatingsystem_id => operatingsystems(:redhat).id,
-          :architecture_id => architectures(:x86_64).id,
-          :subnet_id => subnets(:one).id,
-          :medium_id => media(:one).id,
-          :pxe_loader => 'Grub2 UEFI',
-          :realm_id => realms(:myrealm).id,
-          :disk => 'empty partition',
-          :root_pass => 'xybxa6JUkz63w',
-          :location_id => taxonomies(:location1).id,
-          :organization_id => taxonomies(:organization1).id,
-          :expired_on => expiration_date
+        post :create, params: { host: {
+          name: 'myotherfullhost',
+          mac: 'aabbecddee06',
+          ip: '2.3.4.125',
+          domain_id: domains(:mydomain).id,
+          operatingsystem_id: operatingsystems(:redhat).id,
+          architecture_id: architectures(:x86_64).id,
+          subnet_id: subnets(:one).id,
+          medium_id: media(:one).id,
+          pxe_loader: 'Grub2 UEFI',
+          realm_id: realms(:myrealm).id,
+          disk: 'empty partition',
+          root_pass: 'xybxa6JUkz63w',
+          location_id: taxonomies(:location1).id,
+          organization_id: taxonomies(:organization1).id,
+          expired_on: expiration_date
         } }, session: set_session_user
       end
       h = Host.search_for('myotherfullhost').first
@@ -42,7 +42,7 @@ class HostsControllerTest < ActionController::TestCase
 
     test 'should add expiration date to host' do
       expiration_date = Date.today + 14
-      put :update, params: { :id => host.name, :host => { :expired_on => expiration_date } }, session: set_session_user
+      put :update, params: { id: host.name, host: { expired_on: expiration_date } }, session: set_session_user
       h = Host.find(host.id)
       assert_equal expiration_date, h.expired_on
     end
@@ -58,7 +58,7 @@ class HostsControllerTest < ActionController::TestCase
 
     test 'show a host selection' do
       host_ids = @hosts.map(&:id)
-      post :select_multiple_expiration, params: { :host_ids => host_ids }, session: set_session_user, xhr: true
+      post :select_multiple_expiration, params: { host_ids: host_ids }, session: set_session_user, xhr: true
       assert_response :success
       @hosts.each do |host|
         assert response.body =~ /#{host.name}/m
@@ -67,10 +67,10 @@ class HostsControllerTest < ActionController::TestCase
 
     test 'should set expiration date' do
       expiration_date = Date.today + 14
-      params = { :host_ids => @hosts.map(&:id),
-                 :host => { 'expired_on' => expiration_date.strftime('%Y-%m-%d') } }
+      params = { host_ids: @hosts.map(&:id),
+                 host: { 'expired_on' => expiration_date.strftime('%Y-%m-%d') } }
 
-      post :update_multiple_expiration, params: params, session: set_session_user.merge(:user => users(:admin).id)
+      post :update_multiple_expiration, params: params, session: set_session_user.merge(user: users(:admin).id)
 
       assert_empty flash[:error]
 
@@ -80,10 +80,10 @@ class HostsControllerTest < ActionController::TestCase
     end
 
     test 'should clear the expiration date of multiple hosts' do
-      params = { :host_ids => @hosts.map(&:id),
-                 :host => { :expired_on => '' } }
+      params = { host_ids: @hosts.map(&:id),
+                 host: { expired_on: '' } }
 
-      post :update_multiple_expiration, params: params, session: set_session_user.merge(:user => users(:admin).id)
+      post :update_multiple_expiration, params: params, session: set_session_user.merge(user: users(:admin).id)
 
       assert_empty flash[:error]
 
