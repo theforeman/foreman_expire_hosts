@@ -37,13 +37,13 @@ module ForemanExpireHosts
         def message_variables
           {
             subject: subject,
-            initator: initiator
+            initator: initiator,
           }
         end
 
         def update_notification
           find_notification
-            .update(expired_at: blueprint.expired_at, :message => parsed_message)
+            .update(expired_at: blueprint.expired_at, message: parsed_message)
         end
 
         def redeliver!

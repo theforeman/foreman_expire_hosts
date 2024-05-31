@@ -10,7 +10,7 @@ module ForemanExpireHosts
     context 'with admin user' do
       let(:user) { FactoryBot.create(:user, :admin) }
       test 'should be authorized' do
-        assert_equal true, authorizer.authorized?
+        assert authorizer.authorized?
       end
     end
 
@@ -23,25 +23,25 @@ module ForemanExpireHosts
 
       context 'with edit_hosts and edit_host_expiry permission' do
         test 'should be authorized' do
-          FactoryBot.create(:filter, :role => role, :permissions => [edit_permission, edit_expiry_permission])
-          assert_equal true, authorizer.authorized?
+          FactoryBot.create(:filter, role: role, permissions: [edit_permission, edit_expiry_permission])
+          assert authorizer.authorized?
         end
       end
 
       context 'with edit_hosts and owner permission' do
         setup do
-          FactoryBot.create(:filter, :role => role, :permissions => [edit_permission])
+          FactoryBot.create(:filter, role: role, permissions: [edit_permission])
         end
-        let(:hosts) { FactoryBot.create_list(:host, 2, :owner => user) }
+        let(:hosts) { FactoryBot.create_list(:host, 2, owner: user) }
 
         test 'should be authorized if setting allows owner' do
           Setting[:can_owner_modify_host_expiry_date] = true
-          assert_equal true, authorizer.authorized?
+          assert authorizer.authorized?
         end
 
         test 'should not be authorized if setting does not allow owner' do
           Setting[:can_owner_modify_host_expiry_date] = false
-          assert_equal false, authorizer.authorized?
+          assert_not authorizer.authorized?
         end
       end
     end
@@ -49,7 +49,7 @@ module ForemanExpireHosts
     context 'with unauthorized user' do
       let(:user) { FactoryBot.create(:user) }
       test 'should not be authorized' do
-        assert_equal false, authorizer.authorized?
+        assert_not authorizer.authorized?
       end
     end
   end
