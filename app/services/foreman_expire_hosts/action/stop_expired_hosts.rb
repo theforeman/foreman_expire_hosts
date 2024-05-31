@@ -29,7 +29,7 @@ module ForemanExpireHosts
 
       def success_notification_options
         super.merge(
-          :delete_date => (Date.today + days_to_delete_after_expired)
+          delete_date: (Date.today + days_to_delete_after_expired)
         )
       end
 

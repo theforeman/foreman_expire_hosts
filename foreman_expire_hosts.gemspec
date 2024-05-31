@@ -6,7 +6,6 @@ require 'date'
 Gem::Specification.new do |s|
   s.name        = 'foreman_expire_hosts'
   s.version     = ForemanExpireHosts::VERSION
-  s.date        = Date.today.to_s
   s.authors     = ['Nagarjuna Rachaneni', 'Timo Goebel']
   s.email       = ['nn.nagarjuna@gmail.com', 'mail@timogoebel.name']
   s.summary     = 'Foreman plugin for limiting host lifetime'

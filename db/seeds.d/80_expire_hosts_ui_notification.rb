@@ -11,9 +11,9 @@
       links:
       [
         path_method: :host_path,
-        title: _('Details')
-      ]
-    }
+        title: _('Details'),
+      ],
+    },
   },
   {
     group: _('Hosts'),
@@ -25,8 +25,8 @@
       links:
       [
         path_method: :host_path,
-        title: _('Details')
-      ]
-    }
-  }
+        title: _('Details'),
+      ],
+    },
+  },
 ].each { |blueprint| UINotifications::Seed.new(blueprint).configure }

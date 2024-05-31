@@ -4,30 +4,31 @@ module ForemanExpireHosts
   module HostControllerExtensions
     def self.prepended(base)
       base.class_eval do
-        before_action :validate_multiple_expiration, :only => :update_multiple_expiration
-        before_action :find_multiple_with_expire_hosts, :only => [:select_multiple_expiration, :update_multiple_expiration]
+        before_action :validate_multiple_expiration, only: :update_multiple_expiration
+        before_action :find_multiple_with_expire_hosts,
+          only: %i[select_multiple_expiration update_multiple_expiration]
         alias_method :find_multiple_with_expire_hosts, :find_multiple
       end
     end
 
-    def select_multiple_expiration; end
+    def select_multiple_expiration
+    end
 
     def update_multiple_expiration
       failed_hosts = {}
 
       @hosts.each do |host|
-        begin
-          host.expired_on = expiration_date
-          host.save!
-        rescue StandardError => e
-          failed_hosts[host.name] = e
-          message = if expiration_date.present?
-                      _('Failed to set expiration date for %{host} to %{expiration_date}.') % { :host => host, :expiration_date => l(expiration_date) }
-                    else
-                      _('Failed to clear expiration date for %s.') % host
-                    end
-          Foreman::Logging.exception(message, e)
-        end
+        host.expired_on = expiration_date
+        host.save!
+      rescue StandardError => e
+        failed_hosts[host.name] = e
+        message = if expiration_date.present?
+                    format(_('Failed to set expiration date for %{host} to %{expiration_date}.'), host: host,
+                                                                                                  expiration_date: l(expiration_date))
+                  else
+                    _('Failed to clear expiration date for %s.') % host
+                  end
+        Foreman::Logging.exception(message, e)
       end
 
       if failed_hosts.empty?
@@ -38,8 +39,8 @@ module ForemanExpireHosts
         end
       else
         error n_('The expiration date could not be set for host: %s.',
-                 'The expiration date could not be set for hosts: %s.',
-                 failed_hosts.count) % failed_hosts.map { |h, err| "#{h} (#{err})" }.to_sentence
+          'The expiration date could not be set for hosts: %s.',
+          failed_hosts.count) % failed_hosts.map { |h, err| "#{h} (#{err})" }.to_sentence
       end
       redirect_back_or_to hosts_path
     end
