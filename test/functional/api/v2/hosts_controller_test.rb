@@ -10,7 +10,7 @@ class Api::V2::HostsControllerTest < ActionController::TestCase
   end
 
   test 'should show individual record with expiry data' do
-    get :show, params: { :id => host.to_param }
+    get :show, params: { id: host.to_param }
     assert_response :success
     show_response = ActiveSupport::JSON.decode(@response.body)
     assert_not_empty show_response

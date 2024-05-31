@@ -16,8 +16,8 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
   context '#delete_expired_hosts' do
     context 'with single owner' do
       setup do
-        FactoryBot.create_list(:host, 2, :expired, :owner => user)
-        FactoryBot.create_list(:host, 2, :owner => user)
+        FactoryBot.create_list(:host, 2, :expired, owner: user)
+        FactoryBot.create_list(:host, 2, owner: user)
       end
 
       test 'should delete expired hosts' do
@@ -31,8 +31,8 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
     context 'with usergroup owner' do
       setup do
-        FactoryBot.create_list(:host, 2, :expired, :owner => usergroup)
-        FactoryBot.create_list(:host, 2, :owner => usergroup)
+        FactoryBot.create_list(:host, 2, :expired, owner: usergroup)
+        FactoryBot.create_list(:host, 2, owner: usergroup)
       end
 
       test 'should delete expired hosts' do
@@ -65,7 +65,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
       end
 
       test 'should deliver notification to additional recipients' do
-        FactoryBot.create_list(:host, 2, :expired, :owner => user)
+        FactoryBot.create_list(:host, 2, :expired, owner: user)
         ExpireHostsNotifications.delete_expired_hosts
         assert_equal 2, ActionMailer::Base.deliveries.count
         assert_includes ActionMailer::Base.deliveries.first.subject, 'Deleted expired hosts'
@@ -83,13 +83,13 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
   context '#stop_expired_hosts' do
     let(:power_mock) { mock('power') }
-    let(:host) { FactoryBot.create(:host, :expired, :on_compute_resource, :owner => user) }
+    let(:host) { FactoryBot.create(:host, :expired, :on_compute_resource, owner: user) }
     let(:blueprint) { NotificationBlueprint.find_by(name: 'expire_hosts_stopped_host') }
     setup do
       power_mock.stubs(:ready?).returns(true)
       host.unstub(:queue_compute)
       Host.any_instance.stubs(:power).returns(power_mock)
-      FactoryBot.create_list(:host, 2, :owner => user)
+      FactoryBot.create_list(:host, 2, owner: user)
     end
 
     test 'should stop expired hosts' do
@@ -120,7 +120,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
     end
 
     context 'with a host expiring today' do
-      let(:host) { FactoryBot.create(:host, :expires_today, :on_compute_resource, :owner => user) }
+      let(:host) { FactoryBot.create(:host, :expires_today, :on_compute_resource, owner: user) }
       let(:delete_date) { Date.today + Setting[:days_to_delete_after_host_expiration].to_i }
 
       it 'should stop the host and show the correct delete date' do
@@ -139,7 +139,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
   context '#deliver_expiry_warning_notification' do
     let(:blueprint) { NotificationBlueprint.find_by(name: 'expire_hosts_expiry_warning') }
-    let(:hosts) { FactoryBot.create_list(:host, 2, :expires_in_a_week, :owner => user) }
+    let(:hosts) { FactoryBot.create_list(:host, 2, :expires_in_a_week, owner: user) }
 
     setup do
       Setting['notify1_days_before_host_expiry'] = 7
@@ -181,7 +181,7 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
       test 'should send two notifications for two users' do
         owner2 = FactoryBot.create(:user, :with_mail)
-        FactoryBot.create(:host, :expires_in_a_week, :owner => owner2)
+        FactoryBot.create(:host, :expires_in_a_week, owner: owner2)
         ExpireHostsNotifications.deliver_expiry_warning_notification
         assert_equal 2, ActionMailer::Base.deliveries.count
         assert_includes ActionMailer::Base.deliveries.first.subject, 'Expiring hosts in foreman'
@@ -190,9 +190,9 @@ class ExpireHostsNotificationsTest < ActiveSupport::TestCase
 
       test 'should send three notifications for three users' do
         user2 = FactoryBot.create(:user, :with_mail)
-        user3 = FactoryBot.create(:user, :with_mail, :usergroups => [usergroup])
-        FactoryBot.create(:host, :expires_in_a_week, :owner => user2)
-        FactoryBot.create(:host, :expires_in_a_week, :owner => usergroup)
+        user3 = FactoryBot.create(:user, :with_mail, usergroups: [usergroup])
+        FactoryBot.create(:host, :expires_in_a_week, owner: user2)
+        FactoryBot.create(:host, :expires_in_a_week, owner: usergroup)
         ExpireHostsNotifications.deliver_expiry_warning_notification
         assert_equal 3, ActionMailer::Base.deliveries.count
         assert_includes ActionMailer::Base.deliveries.first.subject, 'Expiring hosts in foreman'

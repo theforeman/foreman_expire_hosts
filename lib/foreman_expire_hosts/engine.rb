@@ -19,7 +19,7 @@ module ForemanExpireHosts
       end
     end
 
-    initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |_app|
+    initializer 'foreman_expire_hosts.register_plugin', before: :finisher_hook do |_app|
       Foreman::Plugin.register :foreman_expire_hosts do
         requires_foreman '>= 3.0.0'
         register_custom_status HostStatus::ExpirationStatus
@@ -30,7 +30,7 @@ module ForemanExpireHosts
         security_block :foreman_expire_hosts do
           permission :edit_host_expiry,
                      {},
-                     :resource_type => 'Host'
+                     resource_type: 'Host'
         end
 
         # Extend built in permissions
@@ -85,14 +85,12 @@ module ForemanExpireHosts
     end
 
     config.to_prepare do
-      begin
-        ::Host::Managed.include ForemanExpireHosts::HostExt
-        ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
-        ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
-        ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
-      rescue StandardError => e
-        Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
-      end
+      ::Host::Managed.include ForemanExpireHosts::HostExt
+      ::HostsController.prepend ForemanExpireHosts::HostControllerExtensions
+      ::AuditsHelper.include ForemanExpireHosts::AuditsHelperExtensions
+      ::Api::V2::HostsController.include ForemanExpireHosts::Api::V2::HostsControllerExtensions
+    rescue StandardError => e
+      Rails.logger.warn "ForemanExpireHosts: skipping engine hook (#{e})"
     end
 
     rake_tasks do

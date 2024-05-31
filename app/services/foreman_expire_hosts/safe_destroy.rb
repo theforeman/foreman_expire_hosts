@@ -20,12 +20,8 @@ module ForemanExpireHosts
         subject.destroy!
       end
     rescue ActiveRecord::RecordNotDestroyed => e
-      message = _('Failed to delete %{class_name} %{subject}: %{message} - Errors: %{errors}') % {
-        :class_name => subject.class.name,
-        :subject => subject,
-        :message => e.message,
-        :errors => e.record.errors.full_messages.to_sentence
-      }
+      message = format(_('Failed to delete %{class_name} %{subject}: %{message} - Errors: %{errors}'),
+                       class_name: subject.class.name, subject: subject, message: e.message, errors: e.record.errors.full_messages.to_sentence)
       Foreman::Logging.exception(message, e)
       false
     end

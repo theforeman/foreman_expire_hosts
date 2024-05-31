@@ -3,7 +3,7 @@
 # Tasks
 namespace :expired_hosts do
   desc 'Delete all expired hosts, send notification email about expiring hosts'
-  task :deliver_notifications => :environment do
+  task deliver_notifications: :environment do
     User.as_anonymous_admin do
       ExpireHostsNotifications.delete_expired_hosts
       ExpireHostsNotifications.stop_expired_hosts
@@ -28,6 +28,4 @@ end
 Rake::Task[:test].enhance ['test:foreman_expire_hosts']
 
 load 'tasks/jenkins.rake'
-if Rake::Task.task_defined?(:'jenkins:unit')
-  Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts']
-end
+Rake::Task['jenkins:unit'].enhance ['test:foreman_expire_hosts'] if Rake::Task.task_defined?(:'jenkins:unit')

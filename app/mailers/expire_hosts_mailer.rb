@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ExpireHostsMailer < ApplicationMailer
-  default :content_type => 'text/html', :from => Setting[:email_reply_address] || 'noreply@your-foreman.com'
+  default content_type: 'text/html', from: Setting[:email_reply_address] || 'noreply@your-foreman.com'
 
   def deleted_hosts_notification(recipient, hosts)
     build_mail(
@@ -54,16 +54,16 @@ class ExpireHostsMailer < ApplicationMailer
     user = user_for_recipient(recipient)
     @hosts = hosts
     @authorized_for_expiry_date_change = ForemanExpireHosts::ExpiryEditAuthorizer.new(
-      :user => user,
-      :hosts => hosts
+      user: user,
+      hosts: hosts
     ).authorized?
     set_locale_for(user) do
       mail(
-        :to => recipient_mail(recipient),
-        :subject => _(subject),
-        :importance => 'High'
+        to: recipient_mail(recipient),
+        subject: _(subject),
+        importance: 'High'
       ) do |format|
-        format.html { render :layout => 'application_mailer' }
+        format.html { render layout: 'application_mailer' }
       end
     end
   end

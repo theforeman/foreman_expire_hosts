@@ -11,6 +11,3 @@ inherit_mode:
 Metrics/BlockLength:
   Exclude:
     - 'lib/foreman_expire_hosts/engine.rb'
-
-Style/FormatString:
-  EnforcedStyle: percent
