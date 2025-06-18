@@ -18,6 +18,9 @@ class ExpirationStatusTest < ActiveSupport::TestCase
 
     @host.expired_on = Date.today
     assert_equal 'Expires today', @status.to_label
+
+    @host.expired_on = nil
+    assert_equal 'Does not expire', @status.to_label
   end
 
   test '#relevant? is only for expiring hosts' do

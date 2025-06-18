@@ -39,6 +39,7 @@ module HostStatus
     end
 
     def to_label(_options = {})
+      return N_('Does not expire') unless host.expires?
       case to_status
       when OK
         N_('Expires on %s') % I18n.l(host.expired_on.to_date)
