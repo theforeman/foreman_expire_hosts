@@ -15,8 +15,10 @@ module ForemanExpireHosts
 
     initializer 'foreman_expire_hosts.register_plugin', :before => :finisher_hook do |app|
       app.reloader.to_prepare do
+        require 'foreman/cron'
+
         Foreman::Plugin.register :foreman_expire_hosts do
-          requires_foreman '>= 3.13.0'
+          requires_foreman '>= 3.18.0'
           register_custom_status HostStatus::ExpirationStatus
 
           # strong parameters
@@ -76,6 +78,9 @@ module ForemanExpireHosts
           describe_host do
             multiple_actions_provider :expire_hosts_host_multiple_actions
           end
+
+          # Register recurring task with Foreman::Cron framework
+          Foreman::Cron.register(:daily, 'expired_hosts:deliver_notifications')
         end
       end
     end
