@@ -19,10 +19,10 @@ module ForemanExpireHosts
 
         Foreman::Plugin.register :foreman_expire_hosts do
           requires_foreman '>= 3.18.0'
-          register_custom_status HostStatus::ExpirationStatus
+          register_custom_status ::HostStatus::ExpirationStatus
 
           # strong parameters
-          parameter_filter Host::Managed, :expired_on
+          parameter_filter ::Host::Managed, :expired_on
 
           security_block :foreman_expire_hosts do
             permission :edit_host_expiry,
@@ -31,12 +31,12 @@ module ForemanExpireHosts
           end
 
           # Extend built in permissions
-          Foreman::AccessControl.permission(:edit_hosts).actions.concat [
+          ::Foreman::AccessControl.permission(:edit_hosts).actions.concat [
             'hosts/select_multiple_expiration',
             'hosts/update_multiple_expiration',
           ]
 
-          Setting::BLANK_ATTRS << 'host_expiry_email_recipients'
+          ::Setting::BLANK_ATTRS << 'host_expiry_email_recipients'
 
           settings do
             category(:expire_hosts, N_('Expire Hosts')) do
